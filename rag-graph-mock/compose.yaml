@@ -1,0 +1,23 @@
+# Dev-окружение: mock backend на :8000 для фронта rag-graph.
+#
+# Перед стартом остановите systemd rag-backend, если он слушает 8000:
+#   sudo systemctl stop rag-backend
+#
+# Из этой папки:
+#   docker compose up -d --build
+#
+# Остановка:
+#   docker compose down
+#   sudo systemctl start rag-backend   # если нужно вернуть прод-бэкенд
+
+name: rag-graph-mock
+
+services:
+  mock-backend:
+    container_name: rag-graph-mock
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    # без restart:always — поднимается и гасится явно через compose

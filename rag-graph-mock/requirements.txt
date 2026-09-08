@@ -1,0 +1,5 @@
+# Минимальные зависимости для mock_main.py (без БД / LiteLLM)
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+python-jose[cryptography]==3.3.0
+pydantic==2.10.3
