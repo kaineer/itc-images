@@ -1,0 +1,21 @@
+# Dev-окружение: mock backend police_ai на :3000.
+#
+# Из этой папки:
+#   docker compose up -d --build
+# или из корня itc-images:
+#   make police.backend
+#
+# Остановка:
+#   docker compose down
+#   make clean
+
+name: police-ai-mock
+
+services:
+  mock-backend:
+    container_name: police-ai-mock
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"

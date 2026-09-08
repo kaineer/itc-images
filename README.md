@@ -4,11 +4,13 @@ Docker-образы и mock-серверы для локальной разра�
 
 | Папка | Назначение |
 |-------|------------|
-| [`rag-graph-mock`](./rag-graph-mock) | Mock API для фронтенда rag-graph |
+| [`rag-graph-mock`](./rag-graph-mock) | Mock API для фронтенда rag-graph (:8000) |
+| [`police_ai-mock`](./police_ai-mock) | Mock API для police_ai (:3000) |
 
 ## Make
 
 ```bash
-make rag.backend   # поднять mock backend rag-graph (:8000)
-make clean         # остановить все моки из списка MOCKS
+make rag.backend      # mock rag-graph (:8000)
+make police.backend   # mock police_ai (:3000)
+make clean            # остановить все моки из списка MOCKS
 ```

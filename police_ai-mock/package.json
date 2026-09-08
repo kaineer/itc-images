@@ -1,0 +1,15 @@
+{
+  "name": "police_ai-mock",
+  "version": "1.0.0",
+  "description": "Mock Fastify backend for police_ai (port 3000)",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "fastify": "^5.12.1"
+  }
+}
