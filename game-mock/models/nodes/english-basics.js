@@ -7,6 +7,7 @@
  *
  * branch / branches: 'dev' | 'ingame' | 'archive'
  * masterNodeId не указывайте у корня (подставится нулевой UUID).
+ * У каждой ноды, включая корень, должен быть groupOfTheQuestionId.
  */
 const ids = require('../ids');
 
@@ -16,6 +17,7 @@ module.exports = {
     {
       id: ids.universeEnglish,
       nodeName: 'English Basics',
+      groupOfTheQuestionId: ids.groupIntro,
       x: 0,
       y: 240
     },

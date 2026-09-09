@@ -2,19 +2,6 @@
 
 const { ok, fail, requireUser } = require('../lib/http');
 
-function pageSlice(items, page, size) {
-  const p = Math.max(0, Number(page) || 0);
-  const s = Math.max(1, Number(size) || 20);
-  const start = p * s;
-  return {
-    content: items.slice(start, start + s),
-    page: p,
-    size: s,
-    totalElements: items.length,
-    totalPages: Math.ceil(items.length / s) || 0
-  };
-}
-
 async function authRoutes(fastify) {
   const { store } = fastify;
 
@@ -56,26 +43,25 @@ async function authRoutes(fastify) {
     if (prefix) {
       const p = String(prefix).toLowerCase();
       items = items.filter(
-        (u) => u.userName.toLowerCase().startsWith(p) || u.email.toLowerCase().startsWith(p)
+        (u) =>
+          u.userName.toLowerCase().includes(p) || u.email.toLowerCase().includes(p)
       );
     }
-    return ok(pageSlice(items, page, size), 'Ok');
+    return ok(store.usersPage(items, page, size), 'Ok');
   });
 
   fastify.get('/user/authors', async () => {
-    return ok(
-      store.users
-        .filter((u) => u.roles.includes('METHODIST') || u.roles.includes('GAME_DIZ'))
-        .map((u) => store.userOut(u)),
-      'Ok'
-    );
+    const authors = store.users
+      .filter((u) => u.roles.includes('METHODIST') || u.roles.includes('GAME_DIZ'))
+      .map((u) => store.userPreview(u));
+    return ok(authors, 'Ok');
   });
 
   fastify.get('/user/mentors', async () => {
-    return ok(
-      store.users.filter((u) => u.roles.includes('MENTOR')).map((u) => store.userOut(u)),
-      'Ok'
-    );
+    const mentors = store.users
+      .filter((u) => u.roles.includes('MENTOR'))
+      .map((u) => store.userOut(u));
+    return ok(mentors, 'Ok');
   });
 
   fastify.get('/user/roles', async () =>

@@ -12,7 +12,7 @@ module.exports = {
   questionDescription: 'Вставьте нужную форму глагола',
   type: 'SENTENCE_WITH_GAPS',
   category: ['CATEGORY_2'],
-  status: 'IN_GAME',
+  status: 'INGAME',
   idGroupsOfTheQuestions: [ids.groupTenses],
   quiz: {
     question: 'Заполните пропуски в предложении',

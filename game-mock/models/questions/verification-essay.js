@@ -13,7 +13,7 @@ module.exports = {
   questionDescription: 'Напишите 3–5 предложений о своём дне',
   type: 'VERIFICATION',
   category: ['CATEGORY_4'],
-  status: 'IN_GAME',
+  status: 'INGAME',
   oneShot: true,
   idGroupsOfTheQuestions: [ids.groupWriting],
   quiz: {

@@ -11,6 +11,7 @@ module.exports = {
     {
       id: ids.universeEnglish,
       nodeName: 'English Basics (archived)',
+      groupOfTheQuestionId: ids.groupIntro,
       nodeStatus: 'ARCHIVE',
       x: 0,
       y: 0

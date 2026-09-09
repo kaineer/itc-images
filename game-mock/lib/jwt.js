@@ -26,7 +26,8 @@ function encodeJwt(payload) {
 function createAccessToken(user) {
   const now = Math.floor(Date.now() / 1000);
   return encodeJwt({
-    sub: user.id,
+    sub: user.userName,
+    userId: user.id,
     userName: user.userName,
     roles: user.roles || [],
     type: 'access',

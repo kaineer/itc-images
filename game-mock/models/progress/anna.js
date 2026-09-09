@@ -14,6 +14,7 @@ module.exports = [
     playerId: ids.userPlayer,
     nodeId: ids.universeEnglish,
     questionStatus: 'ANSWERED',
+    currentQuestionId: ids.qIntro,
     isOpen: true
   },
   {

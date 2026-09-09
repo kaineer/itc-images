@@ -157,7 +157,8 @@ function hydrateCurrency(raw, index = 0) {
   return fill(raw, {
     currencyId: raw.id || raw.currencyId || index + 1,
     currencyName: 'Монета',
-    currencyType: 'GAME'
+    currencyType: 'GAME',
+    createDate: raw.createDate || NOW
   });
 }
 
@@ -190,6 +191,16 @@ function hydrateExperienceNode(raw) {
 }
 
 function hydrateFile(raw, index = 0) {
+  const mimeType =
+    raw.mimeType ||
+    (raw.fileType === 'MP3' ? 'audio/mpeg' : raw.fileType === 'JPG' ? 'image/jpeg' : 'application/octet-stream');
+  const fileType =
+    raw.fileType ||
+    (mimeType.includes('mpeg') || mimeType.includes('audio')
+      ? 'MP3'
+      : mimeType.startsWith('image/')
+        ? 'JPG'
+        : null);
   return fill(raw, {
     fileId: raw.fileId || index + 1,
     fileName: 'file.bin',
@@ -198,8 +209,10 @@ function hydrateFile(raw, index = 0) {
     nodeId: null,
     kind: 'question-body',
     answerNumber: null,
-    mimeType: 'application/octet-stream',
-    content: Buffer.from('')
+    fileType,
+    mimeType,
+    // base64 без data:-префикса — так ждёт фронт (base64ToBlob)
+    contentBase64: ''
   });
 }
 

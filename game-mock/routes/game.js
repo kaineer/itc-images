@@ -88,7 +88,15 @@ async function gameRoutes(fastify) {
       items = items.filter((q) => q.createDate <= filter.endPeriodDate);
     }
     const sliced = paginate(items, offset, limit).map((q) => store.questionOut(q));
-    return ok({ items: sliced, total: items.length, offset: Number(offset) || 0, limit: Number(limit) || sliced.length });
+    return ok(
+      {
+        ListOfTheQuestion: sliced,
+        Pagination: {
+          amountOfRecordsAtAll: items.length
+        }
+      },
+      'Ok'
+    );
   });
 
   fastify.post('/api/v2/question', async (request, reply) => {
@@ -493,15 +501,22 @@ async function gameRoutes(fastify) {
 
   fastify.post('/api/v2/file/body', async (request) => {
     const body = request.body || {};
+    const fileType = body.fileType === 'MP3' ? 'MP3' : 'JPG';
     const file = store.defaults.hydrateFile(
       {
         fileId: store.nextFileId(),
         fileName: body.fileName || `question-body-${Date.now()}`,
         questionId: body.questionId,
         kind: 'question-body',
-        mimeType: body.fileType === 'MP3' ? 'audio/mpeg' : 'image/jpeg'
+        fileType,
+        mimeType: fileType === 'MP3' ? 'audio/mpeg' : 'image/jpeg',
+        contentBase64: body.contentBase64 || body.content || ''
       },
       0
+    );
+    // один файл на тип в теле вопроса
+    store.files = store.files.filter(
+      (f) => !(f.questionId === file.questionId && f.kind === 'question-body' && f.fileType === fileType)
     );
     store.files.push(file);
     return ok(String(file.fileId));
@@ -515,26 +530,53 @@ async function gameRoutes(fastify) {
         fileName: body.fileName || `answer-option-${Date.now()}`,
         questionId: body.questionId,
         answerNumber: body.answerNumber,
-        kind: 'question-answer'
+        kind: 'question-answer',
+        fileType: 'JPG',
+        mimeType: 'image/jpeg',
+        contentBase64: body.contentBase64 || body.content || ''
       },
       0
+    );
+    store.files = store.files.filter(
+      (f) =>
+        !(
+          f.questionId === file.questionId &&
+          f.kind === 'question-answer' &&
+          Number(f.answerNumber) === Number(file.answerNumber)
+        )
     );
     store.files.push(file);
     return ok(String(file.fileId));
   });
 
   fastify.get('/api/v2/file/files/:questionId', async (request) => {
-    const list = store.files.filter((f) => f.questionId === request.params.questionId);
-    return ok({
-      files: list.map((f) => ({ fileId: f.fileId, fileName: f.fileName, kind: f.kind }))
-    });
+    const questionId = request.params.questionId;
+    const list = store.files.filter((f) => f.questionId === questionId);
+    const mediaForBodyQuestion = {};
+    const jpgsForAnswersQuestion = {};
+
+    for (const file of list) {
+      const payload = file.contentBase64 || '';
+      if (file.kind === 'question-body') {
+        const type = file.fileType === 'MP3' ? 'MP3' : 'JPG';
+        mediaForBodyQuestion[type] = payload;
+      } else if (file.kind === 'question-answer' && file.answerNumber != null) {
+        jpgsForAnswersQuestion[String(file.answerNumber)] = payload;
+      }
+    }
+
+    // оба поля обязательны — иначе фронт падает на mediaForBodyQuestion
+    return ok({ mediaForBodyQuestion, jpgsForAnswersQuestion });
   });
 
   fastify.get('/api/v2/file/:fileId', async (request, reply) => {
     const file = store.files.find((f) => String(f.fileId) === String(request.params.fileId));
     if (!file) return fail(reply, 404, 'File not found');
     reply.header('Content-Disposition', `inline; filename="${file.fileName}"`);
-    return reply.type(file.mimeType || 'application/octet-stream').send(file.content || Buffer.from(file.fileName));
+    const buf = file.contentBase64
+      ? Buffer.from(file.contentBase64, 'base64')
+      : Buffer.from(file.fileName);
+    return reply.type(file.mimeType || 'application/octet-stream').send(buf);
   });
 
   fastify.delete('/api/v2/file/:fileId', async (request, reply) => {

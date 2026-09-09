@@ -11,10 +11,21 @@ function costOut(item) {
   };
 }
 
+/** Форма Coin на фронте: id, currencyType, currencyName, createDate */
+function coinOut(currency) {
+  if (!currency) return null;
+  return {
+    id: currency.currencyId,
+    currencyType: currency.currencyType,
+    currencyName: currency.currencyName,
+    createDate: currency.createDate
+  };
+}
+
 async function rewardRoutes(fastify) {
   const { store } = fastify;
 
-  fastify.get('/currency', async () => ok(store.currencies));
+  fastify.get('/currency', async () => ok(store.currencies.map(coinOut), 'Ok'));
 
   fastify.post('/currency', async (request, reply) => {
     const body = request.body || {};
@@ -22,11 +33,15 @@ async function rewardRoutes(fastify) {
       return fail(reply, 400, 'currencyName and currencyType are required');
     }
     const currency = store.defaults.hydrateCurrency(
-      { ...body, currencyId: store.nextCurrencyId() },
+      {
+        ...body,
+        currencyId: store.nextCurrencyId(),
+        createDate: new Date().toISOString()
+      },
       0
     );
     store.currencies.push(currency);
-    return ok(currency);
+    return ok(coinOut(currency), 'Ok');
   });
 
   fastify.put('/currency/:currencyId', async (request, reply) => {
@@ -37,7 +52,7 @@ async function rewardRoutes(fastify) {
     const body = request.body || {};
     if (body.currencyName != null) currency.currencyName = body.currencyName;
     if (body.currencyType != null) currency.currencyType = body.currencyType;
-    return ok(currency);
+    return ok(coinOut(currency), 'Ok');
   });
 
   fastify.delete('/currency/:currencyId', async (request, reply) => {
@@ -46,7 +61,7 @@ async function rewardRoutes(fastify) {
     );
     if (index < 0) return fail(reply, 404, 'Currency not found');
     const [removed] = store.currencies.splice(index, 1);
-    return ok(removed);
+    return ok(coinOut(removed), 'Ok');
   });
 
   fastify.get('/cost/player.progress/:nodeId', async (request) => {
@@ -94,7 +109,10 @@ async function rewardRoutes(fastify) {
 
   fastify.get('/experience-node/free-currencies', async () => {
     const used = new Set(store.experienceNodes.map((n) => Number(n.currencyId)));
-    return ok(store.currencies.filter((c) => !used.has(Number(c.currencyId))));
+    return ok(
+      store.currencies.filter((c) => !used.has(Number(c.currencyId))).map(coinOut),
+      'Ok'
+    );
   });
 
   fastify.get('/experience-node/roots', async () => {

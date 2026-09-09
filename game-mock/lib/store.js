@@ -13,8 +13,17 @@ function clone(value) {
 }
 
 function publicUser(user) {
-  const { password, ...rest } = user;
-  return rest;
+  if (!user) return null;
+  return {
+    userId: user.id,
+    userName: user.userName,
+    email: user.email,
+    password: user.password,
+    roles: user.roles || [],
+    organizationsId: user.organizationsId || [],
+    enabled: user.enabled,
+    createdAt: user.createdAt
+  };
 }
 
 function createStore() {
@@ -144,7 +153,8 @@ function createStore() {
     const payload = verifyJwt(token) || decodeJwt(token);
     if (!payload || payload.type === 'refresh') return null;
     if (typeof payload.exp === 'number' && payload.exp * 1000 <= Date.now()) return null;
-    return payload.sub ? findUser(payload.sub) : null;
+    const userId = payload.userId || payload.sub;
+    return userId ? findUser(userId) || findUserByLogin(userId) : null;
   }
 
   function refreshAccess(refreshToken) {
@@ -172,6 +182,27 @@ function createStore() {
     return {
       ...publicUser(user),
       organizations: (user.organizationsId || []).map((id) => findOrg(id)).filter(Boolean)
+    };
+  }
+
+  function userPreview(user) {
+    if (!user) return null;
+    return { userId: user.id, userName: user.userName };
+  }
+
+  function usersPage(items, page, size) {
+    const p = Math.max(0, Number(page) || 0);
+    const s = Math.max(1, Number(size) || 20);
+    const start = p * s;
+    const slice = items.slice(start, start + s);
+    return {
+      ListOfTheUsers: slice,
+      Pagination: {
+        pageNumber: p,
+        amountOfRecordsInThePage: slice.length,
+        amountOfRecordsAtAll: items.length,
+        amountOfPages: Math.ceil(items.length / s) || 0
+      }
     };
   }
 
@@ -205,6 +236,7 @@ function createStore() {
     return {
       groupId: group.groupId,
       groupName: group.groupName,
+      // всегда массив id вопросов (не null) — фронт ожидает список у каждой группы ноды
       questionsId: questionsForGroup(group.groupId),
       linkedNodesId: nodesForGroup(group.groupId)
     };
@@ -305,7 +337,7 @@ function createStore() {
     const ids = questionsForGroup(node.groupOfTheQuestionId);
     const playable = ids
       .map((id) => questions.find((q) => q.id === id))
-      .filter((q) => q && ['APPROVED', 'IN_GAME'].includes(q.status));
+      .filter((q) => q && ['APPROVED', 'INGAME'].includes(q.status));
     return playable[0] || null;
   }
 
@@ -434,6 +466,8 @@ function createStore() {
     defaultUser,
     findOrg,
     userOut,
+    userPreview,
+    usersPage,
     groupById,
     groupOut,
     questionsForGroup,
