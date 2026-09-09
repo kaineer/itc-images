@@ -337,7 +337,7 @@ function createStore() {
     const ids = questionsForGroup(node.groupOfTheQuestionId);
     const playable = ids
       .map((id) => questions.find((q) => q.id === id))
-      .filter((q) => q && ['APPROVED', 'INGAME'].includes(q.status));
+      .filter((q) => q && q.status === 'APPROVED');
     return playable[0] || null;
   }
 

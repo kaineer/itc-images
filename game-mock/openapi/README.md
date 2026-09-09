@@ -82,10 +82,12 @@ Query `offset` / `limit` как в спеке; в `Pagination` фронту до
 
 ### Статус вопроса
 
-| OpenAPI enum | Мок / фактическое использование на фронте |
-|--------------|-------------------------------------------|
-| Есть `IN_GAME` | Используется **`INGAME`** (без подчёркивания) |
-| — | В сидах и фильтрах playable: `APPROVED` \| `INGAME` |
+| OpenAPI | Мок / фронт |
+|---------|-------------|
+| В фильтре встречается `IN_GAME` | **Бэкенд не возвращает `INGAME` / `IN_GAME`** |
+| В `QuestionGetDTO`: `NEW`, `REVIEW`, `REJECT`, `APPROVED`, `DEPRECATED` | В сидах «игровые» вопросы — **`APPROVED`** + непустой `idGroupsOfTheQuestions` |
+
+`INGAME` — **только фронтовое** представление: `status === 'APPROVED'` **и** у вопроса есть прикреплённая группа (`idGroupsOfTheQuestions.length > 0`). См. `getQuestionStatus` во фронте.
 
 ### `GET /api/v2/file/files/{questionId}`
 

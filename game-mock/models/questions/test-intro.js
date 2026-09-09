@@ -11,7 +11,7 @@ module.exports = {
   questionDescription: 'Вводный вопрос вселенной English Basics',
   type: 'TEST',
   category: ['CATEGORY_1'],
-  status: 'INGAME',
+  status: 'APPROVED',
   idGroupsOfTheQuestions: [ids.groupIntro],
   quiz: {
     question: 'Ready to start English Basics?',

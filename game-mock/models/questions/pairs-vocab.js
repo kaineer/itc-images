@@ -12,7 +12,7 @@ module.exports = {
   questionDescription: 'Соедините английские и русские слова',
   type: 'PAIRS',
   category: ['CATEGORY_3'],
-  status: 'INGAME',
+  status: 'APPROVED',
   idGroupsOfTheQuestions: [ids.groupTenses],
   quiz: {
     question: 'Составьте пары',

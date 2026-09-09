@@ -14,7 +14,7 @@ module.exports = {
   questionDescription: 'Выберите верный артикль',
   type: 'TEST',
   category: ['CATEGORY_1'],
-  status: 'INGAME',
+  status: 'APPROVED',
   idGroupsOfTheQuestions: [ids.groupArticles],
   quiz: {
     question: 'Выберите правильный вариант: I saw ___ apple.',
