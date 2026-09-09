@@ -4,6 +4,7 @@ Mock backend (Fastify / Node.js) для локальной разработки 
 Порт по умолчанию **8080**.
 
 Интерфейс собран по OpenAPI из `openapi/` (gateway, auth, game-engine, bank, reward).
+Расхождения спеки с реальным контрактом фронта — в [`openapi/README.md`](./openapi/README.md).
 
 ## Запуск
 

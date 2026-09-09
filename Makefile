@@ -14,6 +14,9 @@ police.backend:
 game.backend:
 	$(CBC) -f ./game-mock/compose.yaml up -d --build
 
+game.dev:
+	cd ./game-mock/ && npm start
+
 clean:
 	@for m in $(MOCKS); do \
 		$(CBC) -f ./$$m/compose.yaml down; \
