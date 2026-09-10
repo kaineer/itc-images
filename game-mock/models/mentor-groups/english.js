@@ -10,5 +10,5 @@ const ids = require('../ids');
 module.exports = {
   mentorsGroupId: ids.mentorsEnglish,
   mentorsGroupName: 'English mentors',
-  mentorsId: [ids.userMentor]
+  mentorsId: [ids.userMentor, ids.userSu]
 };

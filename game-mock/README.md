@@ -34,11 +34,14 @@ PORT=9090 node server.js
 
 | login   | роль            |
 |---------|-----------------|
+| **su**  | все роли        |
 | admin   | ADMINISTRATOR   |
 | anna    | PLAYER          |
 | ivan    | MENTOR          |
 | marina  | METHODIST       |
 | dmitry  | GAME_DIZ        |
+
+`su` удобен для полного контент-цикла (вопрос → группа → approved → узел → перенос во вселенную/игру) без смены пользователей. Также входит в группу менторов English.
 
 Неизвестный login создаёт нового игрока (`PLAYER`).
 
