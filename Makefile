@@ -1,15 +1,21 @@
 CBC ?= podman-compose
 
 # Каталоги с compose.yaml — clean гасит все из списка
-MOCKS := rag-graph-mock police_ai-mock
+MOCKS := rag-graph-mock police_ai-mock game-mock
 
-.PHONY: rag.backend police.backend clean
+.PHONY: rag.backend police.backend game.backend clean
 
 rag.backend:
 	$(CBC) -f ./rag-graph-mock/compose.yaml up -d --build
 
 police.backend:
 	$(CBC) -f ./police_ai-mock/compose.yaml up -d --build
+
+game.backend:
+	$(CBC) -f ./game-mock/compose.yaml up -d --build
+
+game.dev:
+	cd ./game-mock/ && npm start
 
 clean:
 	@for m in $(MOCKS); do \

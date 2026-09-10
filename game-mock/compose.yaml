@@ -1,0 +1,27 @@
+# Dev-окружение: mock backend talent-id game на :8080.
+#
+# Порт на хосте: GAME_MOCK_PORT (по умолчанию 8080).
+#
+# Из этой папки:
+#   docker compose up -d --build
+#   GAME_MOCK_PORT=9090 docker compose up -d --build
+# или из корня itc-images:
+#   make game.backend
+#
+# Остановка:
+#   docker compose down
+#   make clean
+
+name: game-mock
+
+services:
+  mock-backend:
+    container_name: game-mock
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${GAME_MOCK_PORT:-8080}:8080"
+    environment:
+      PORT: "8080"
+      HOST: "0.0.0.0"
