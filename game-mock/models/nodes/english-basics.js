@@ -41,6 +41,15 @@ module.exports = {
       isCost: true
     },
     {
+      id: ids.nodeTest,
+      nodeName: 'Test',
+      masterNodeId: ids.universeEnglish,
+      groupOfTheQuestionId: ids.groupTest,
+      x: 50,
+      y: 500,
+      isCost: true
+    },
+    {
       id: ids.nodePresent,
       nodeName: 'Present Simple',
       masterNodeId: ids.nodeTenses,
