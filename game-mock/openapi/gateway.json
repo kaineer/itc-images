@@ -1,1 +1,148 @@
-{"openapi":"3.0.1","info":{"title":"API Gateway Service doc"},"servers":[{"url":"http://10.1.0.213:8080"}],"tags":[{"name":"Временный контроллер","description":"используется для тестов секьюрности"},{"name":"Коды ошибок","description":"позволяет просматривать внутренние коды ошибок проекта Talent id"}],"paths":{"/":{"get":{"tags":["Временный контроллер"],"summary":"текущий пользователь","description":"Показывает текущего пользователя","operationId":"getUser_1","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"object"}}}}},"security":[{"token":[]}]}},"/credentials":{"get":{"tags":["Временный контроллер"],"summary":"креды","description":"Показывает креды пользователя","operationId":"getCredentials","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"object"}}}}},"security":[{"token":[]}]}},"/api/v1/errors-code":{"get":{"tags":["Коды ошибок"],"summary":"получение списка кодов ошибок","description":"Позволяет получить список всех внутренних кодов ошибок с описанием и сообщением по умолчанию","operationId":"getErrorsCode","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListErrorCodeGetDTO"}}}}},"security":[{"token":[]}]}}},"components":{"schemas":{"BaseResponseListErrorCodeGetDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"array","items":{"$ref":"#/components/schemas/ErrorCodeGetDTO"}}}},"ErrorCodeGetDTO":{"type":"object","properties":{"code":{"type":"integer","format":"int32"},"message":{"type":"string"},"description":{"type":"string"}}}},"securitySchemes":{"token":{"type":"http","scheme":"bearer","bearerFormat":"JWT"}}}}
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API Gateway Service doc"
+  },
+  "servers": [
+    {
+      "url": "http://10.1.0.213:8080"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Временный контроллер",
+      "description": "используется для тестов секьюрности"
+    },
+    {
+      "name": "Коды ошибок",
+      "description": "позволяет просматривать внутренние коды ошибок проекта Talent id"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Временный контроллер"
+        ],
+        "summary": "текущий пользователь",
+        "description": "Показывает текущего пользователя",
+        "operationId": "getUser_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/credentials": {
+      "get": {
+        "tags": [
+          "Временный контроллер"
+        ],
+        "summary": "креды",
+        "description": "Показывает креды пользователя",
+        "operationId": "getCredentials",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v1/errors-code": {
+      "get": {
+        "tags": [
+          "Коды ошибок"
+        ],
+        "summary": "получение списка кодов ошибок",
+        "description": "Позволяет получить список всех внутренних кодов ошибок с описанием и сообщением по умолчанию",
+        "operationId": "getErrorsCode",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListErrorCodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BaseResponseListErrorCodeGetDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorCodeGetDTO"
+            }
+          }
+        }
+      },
+      "ErrorCodeGetDTO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "token": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

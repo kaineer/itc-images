@@ -1,1 +1,4181 @@
-{"openapi":"3.0.1","info":{"title":"Game-Engine Service doc"},"servers":[{"url":"/game-engine"}],"tags":[{"name":"группы менторов","description":"позволяет создавать/изменять/удалять группы менторов"},{"name":"текущий прогресс игрока","description":"управляет текущим прогрессом игрока"},{"name":"хелпер","description":"спомогательные ендпоинт для backend"},{"name":"группы вопросов","description":"позволяет создавать/изменять/удалять группы вопросов"},{"name":"вопросы","description":"позволяет создавать/изменять/удалять вопросы"},{"name":"ответы на вопросы","description":"позволяет игрокам и менторам работать с ответами на вопросы"},{"name":"работа с файлами","description":"позволяет загружать/просматривать/удалять файлы к ответам"},{"name":"узлы дерева вопросов, архивная версия вселенных","description":"управляет узлами дерева"},{"name":"работа с ветками","description":"позволяет администраторам работать с версиями вселенных"},{"name":"узлы дерева вопросов, версия вселенных в игре","description":"управляет узлами дерева"},{"name":"узлы дерева вопросов, девелопперская версия вселенных","description":"управляет узлами дерева"}],"paths":{"/api/v2/question":{"get":{"tags":["вопросы"],"summary":"получение всех вопросов в игре","description":"Позволяет получить все вопросы в игре","operationId":"findAllQuestion","parameters":[{"name":"offset","in":"query","required":true,"schema":{"type":"integer","format":"int32"}},{"name":"limit","in":"query","required":true,"schema":{"type":"integer","format":"int32"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListQuestionGetDTO"}}}}},"security":[{"token":[]}]},"put":{"tags":["вопросы"],"summary":"получение всех вопросов в игре с указанным фильтром","description":"Позволяет получить все вопросы в игре по заданной фильтраци","operationId":"findAllQuestionWithFilter","parameters":[{"name":"offset","in":"query","required":true,"schema":{"type":"integer","format":"int32"}},{"name":"limit","in":"query","required":true,"schema":{"type":"integer","format":"int32"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/FilterForGetQuestionsDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseQuestionPutListDTO"}}}}},"security":[{"token":[]}]},"post":{"tags":["вопросы"],"summary":"создание вопроса","description":"Позволяет создать новый вопрос указанного типа","operationId":"createNewQuestion","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateQuestionDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseQuestionGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/question/verification/{questionId}":{"put":{"tags":["вопросы"],"summary":"обновление вопроса с проверкой ментором","description":"Позволяет изменить существующий вопрос типа VERIFICATION","operationId":"updateVerificationQuestion","parameters":[{"name":"questionId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/QuestionVerificationUpdateDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseQuestionGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/question/test/{questionId}":{"put":{"tags":["вопросы"],"summary":"обновление теста","description":"Позволяет изменить существующий вопрос типа TEST","operationId":"updateTestQuestion","parameters":[{"name":"questionId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/QuestionTestUpdateDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseQuestionGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/question/status/{questionId}":{"put":{"tags":["вопросы"],"summary":"изменение статуса вопроса","description":"Позволяет изменить статус вопроса","operationId":"updateQuestionStatus","parameters":[{"name":"questionId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/QuestionsStatusUpdateDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponse"}}}}},"security":[{"token":[]}]}},"/api/v2/question/sentence_with_gaps/{id}":{"put":{"tags":["вопросы"],"summary":"Тип вопроса предложение с пропусками","description":"Позволяет обновить вопрос типа SENTENCE_WITH_GAPS по id","operationId":"updateQuestionSentenceWithGapsById","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/QuestionSentenceWithGapsUpdateDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListQuestionGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/question/reject/{questionId}":{"put":{"tags":["вопросы"],"summary":"отклонение вопроса экспертом вопроса","description":"Позволяет отклонить вопрос и прокомментировать ","operationId":"rejectQuestion","parameters":[{"name":"questionId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/QuestionRejectDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseQuestionGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/question/pairs/{id}":{"put":{"tags":["вопросы"],"summary":"Пары слов","description":"Позволяет обновить вопрос типа PAIRS по id","operationId":"updateQuestionPairsById","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/QuestionPairsUpdateDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListQuestionGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/progress/{nodeId}":{"put":{"tags":["текущий прогресс игрока"],"summary":"Открытие ноды","description":"Позволяет открыть ноду которая требует наличия стоимости/оплаты ","operationId":"openNodeInPlayerProgress","parameters":[{"name":"nodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponsePlayerProgressGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/node/dev/{nodeId}":{"get":{"tags":["узлы дерева вопросов, девелопперская версия вселенных"],"summary":"получение узла в девелопперской версии вселенных","description":"Позволяет получить узел и его связи","operationId":"getNode_1","parameters":[{"name":"nodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseNodeGetDTO"}}}}},"security":[{"token":[]}]},"put":{"tags":["узлы дерева вопросов, девелопперская версия вселенных"],"summary":"изменение узла в девелопперской версии вселенных","description":"позволяет изменить узел и родителя","operationId":"updateNode","parameters":[{"name":"nodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/NodeUpdateDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseNodeGetDTO"}}}}},"security":[{"token":[]}]},"delete":{"tags":["узлы дерева вопросов, девелопперская версия вселенных"],"summary":"удаление узла в девелопперской версии вселенных","description":"позволяет удалить узел","operationId":"deleteNode","parameters":[{"name":"nodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseString"}}}}},"security":[{"token":[]}]}},"/api/v2/node/dev/positioning/{nodeId}":{"put":{"tags":["узлы дерева вопросов, девелопперская версия вселенных"],"summary":"изменение координат узла в девелопперской версии вселенных","description":"позволяет изменить координаты узла","operationId":"updateNodePosition","parameters":[{"name":"nodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/NodeSetXYDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/helper/graph":{"put":{"tags":["хелпер"],"summary":"упорядочивание узлов в девелопперской версии вселенных","description":"Позволяет упорядочить граф узлов","operationId":"buildGraph","parameters":[{"name":"type","in":"query","required":true,"schema":{"type":"integer","format":"int32"}},{"name":"rootNodeId","in":"query","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponse"}}}}},"security":[{"token":[]}]}},"/api/v2/group-of-question/delete-question":{"put":{"tags":["группы вопросов"],"summary":"удаление вопроса из группы вопросов","description":"Позволяет удалить вопрос из группу вопросов","operationId":"deleteQuestionInTheGroupOfQuestions","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/AddOrDeleteQuestionIdInTheGroupOfTheQuestionsDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseGetGroupOfTheQuestionsDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/group-of-question/change-name":{"put":{"tags":["группы вопросов"],"summary":"изменение имени группы вопросов","description":"Позволяет изменить имя группы вопросов","operationId":"updateNameGroupOfQuestions","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateNameGroupOfTheQuestionDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseGetGroupOfTheQuestionsDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/group-of-question/add-question":{"put":{"tags":["группы вопросов"],"summary":"добавление вопроса в группу вопросов","description":"Позволяет добавить вопрос в группу вопросов","operationId":"addQuestionInTheGroupOfQuestions","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/AddOrDeleteQuestionIdInTheGroupOfTheQuestionsDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseGetGroupOfTheQuestionsDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/group-of-mentors/{mentorsGroupId}":{"get":{"tags":["группы менторов"],"summary":"получение конкретной группы менторов","description":"Позволяет получить группу менторов по ее Id","operationId":"getGroupOfTheMentors","parameters":[{"name":"mentorsGroupId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseGetGroupOfTheMentorsDTO"}}}}},"security":[{"token":[]}]},"put":{"tags":["группы менторов"],"summary":"изменение группы менторов","description":"Позволяет изменить группу менторов по ее Id","operationId":"updateGroupOTheMentors","parameters":[{"name":"mentorsGroupId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateOrUpdateGroupOfTheMentorsDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseGetGroupOfTheMentorsDTO"}}}}},"security":[{"token":[]}]},"delete":{"tags":["группы менторов"],"summary":"удаление группы менторов","description":"Позволяет удалить группу менторов по ее Id","operationId":"deleteGroupOfTheMentors","parameters":[{"name":"mentorsGroupId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponse"}}}}},"security":[{"token":[]}]}},"/api/v2/brunch/ingame":{"put":{"tags":["работа с ветками"],"summary":"перенос девелоперской ветки в игровую","description":"позволяет перенести девелоперскую ветку в игровую","operationId":"updateInGameBrunch","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateIngameBrunchDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponse"}}}}},"security":[{"token":[]}]}},"/api/v2/brunch/dev":{"put":{"tags":["работа с ветками"],"summary":"перенос ветки в девелоперскую","description":"позволяет перенести игровую или архивную  ветку в девелоперскую","operationId":"updateDevBrunch","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateDevBrunchDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponse"}}}}},"security":[{"token":[]}]}},"/api/v2/answer/mentor":{"put":{"tags":["ответы на вопросы"],"summary":"закрепление ответа на рассмотрении за ментором","description":"позволяет закрепить ответ на вопрос за ментором для рассмотрения","operationId":"getAnswerForReview","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/GetAnswerForReviewDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponse"}}}}},"security":[{"token":[]}]}},"/api/v2/node/dev":{"post":{"tags":["узлы дерева вопросов, девелопперская версия вселенных"],"summary":"создание узла в девелопперской версии вселенных","description":"Позволяет создать узел и привязать к родителю","operationId":"createNode","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/NodeCreateDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/group-of-question":{"get":{"tags":["группы вопросов"],"summary":"получение списка групп вопросов","description":"Позволяет получить список всех доступных групп вопросов","operationId":"getAllGroupsOfQuestions","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListGetGroupOfTheQuestionsDTO"}}}}},"security":[{"token":[]}]},"post":{"tags":["группы вопросов"],"summary":"создание новой группы вопросов","description":"Позволяет создать новую группу вопросов","operationId":"createNewGroupOfTheQuestions","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateGroupOfTheQuestionsDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseGetGroupOfTheQuestionsDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/group-of-mentors":{"get":{"tags":["группы менторов"],"summary":"получение списка групп менторов","description":"Позволяет получить список всех доступных групп менторов","operationId":"getAllGroupsOfTheMentors","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListGetGroupOfTheMentorsDTO"}}}}},"security":[{"token":[]}]},"post":{"tags":["группы менторов"],"summary":"создание новой группы менторов","description":"Позволяет создать новую группу менторов","operationId":"createNewGroupOfTheMentors","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateOrUpdateGroupOfTheMentorsDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseGetGroupOfTheMentorsDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/file":{"post":{"tags":["работа с файлами"],"summary":"загрузка файла на сервер к ответу игрока (игрок отвечает на вопрос)","description":"позволяет загрузить файл к ответу на вопрос и возвращает новое имя файла","operationId":"uploadFileToMinIoForPlayer","requestBody":{"content":{"multipart/form-data":{"schema":{"required":["attributes","file"],"type":"object","properties":{"attributes":{"$ref":"#/components/schemas/FileAttributesForAnswerCreateDTO"},"file":{"type":"string","format":"binary"}}}}}},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseFileDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/file/list":{"post":{"tags":["работа с файлами"],"summary":"получение списка имен файлов","description":"позволяет получить список имен файлов прикрепленных к ответу на вопрос","operationId":"getListOfFilesForAnswer","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/FileAttributesGetDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseFileAttributesReceiveForGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/file/body":{"post":{"tags":["работа с файлами"],"summary":"загрузка файла на сервер к телу вопроса (создание вопроса)","description":"позволяет загрузить файл к телу вопроса (создание вопроса)","operationId":"uploadFileToMinIoForQuestionBody","requestBody":{"content":{"multipart/form-data":{"schema":{"required":["attributes","file"],"type":"object","properties":{"attributes":{"$ref":"#/components/schemas/FileAttributesForQuestionBodyDto"},"file":{"type":"string","format":"binary"}}}}}},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseString"}}}}},"security":[{"token":[]}]}},"/api/v2/file/answers":{"post":{"tags":["работа с файлами"],"summary":"загрузка файла на сервер к одному из ответов на вопрос (создание вопроса)","description":"позволяет загрузить файл для ответа к вопросу (создание вопроса)","operationId":"uploadFileToMinIoForQuestionBody_1","requestBody":{"content":{"multipart/form-data":{"schema":{"required":["attributes","file"],"type":"object","properties":{"attributes":{"$ref":"#/components/schemas/FileAttributesForQuestionAnswersDto"},"file":{"type":"string","format":"binary"}}}}}},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseString"}}}}},"security":[{"token":[]}]}},"/api/v2/answer/verification/send":{"post":{"tags":["ответы на вопросы"],"summary":"отправка ответа на вопрос на проверку ментору","description":"Позволяет отправить на проверку ответ на вопрос типа VERIFICATION","operationId":"sendAnswerForVerificationQuestionToCheck","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/SendAnswerForVerificationQuestionDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseAnswer"}}}}},"security":[{"token":[]}]}},"/api/v2/answer/verification/check":{"post":{"tags":["ответы на вопросы"],"summary":"проверка ответа на вопрос ментором","description":"Позволяет проверить ответ вопрос типа VERIFICATION (изменить статус ответа, оставить комментарий)","operationId":"checkAnswerForVerificationQuestion","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CheckAnswerForVerificationQuestionDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponsePlayerProgressGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/answer/test/send":{"post":{"tags":["ответы на вопросы"],"summary":"отправка теста на проверку","description":"Позволяет отправить вопрос типа TEST на автоматическую проверку, при правильном ответе начисляется опыт и награда, при неверном увеличивается счетчик неверных ответов на 1","operationId":"sendAnswerForTestQuestionToCheck","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/SendAnswerForTestQuestionDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponsePlayerProgressGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/answer/sentence_with_gaps/send":{"post":{"tags":["ответы на вопросы"],"summary":"отправка вопроса типа SENTENCE_WITH_GAPS на проверку","description":"Позволяет отправить вопрос типа SENTENCE_WITH_GAPS на автоматическую проверку, при правильном ответе начисляется опыт и награда, при неверном увеличивается счетчик неверных ответов на 1","operationId":"sendAnswerForSentenceWithGapsQuestionToCheck","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/SendAnswerForSentenceWithGapsQuestionDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponsePlayerProgressGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/answer/pairs/send":{"post":{"tags":["ответы на вопросы"],"summary":"отправка вопроса типа PAIRS на проверку","description":"Позволяет отправить вопрос типа PAIRS на автоматическую проверку, при правильном ответе начисляется опыт и награда, при неверном увеличивается счетчик неверных ответов на 1","operationId":"sendAnswerFopPairsQuestionToCheck","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/SendAnswerForPairsQuestionDTO"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponsePlayerProgressGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/question/{questionId}":{"get":{"tags":["вопросы"],"summary":"получение вопроса","description":"Позволяет получить вопрос по id","operationId":"getQuestion","parameters":[{"name":"questionId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseQuestionGetDTO"}}}}},"security":[{"token":[]}]},"delete":{"tags":["вопросы"],"summary":"удаление вопроса","description":"Позволяет удалить вопрос по id","operationId":"deleteQuestion","parameters":[{"name":"questionId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseObject"}}}}},"security":[{"token":[]}]}},"/api/v2/question/logs/{questionId}":{"get":{"tags":["вопросы"],"summary":"получение лога изменений вопроса","description":"Позволяет получить лог изменений по id вопроса","operationId":"getQuestionLogs","parameters":[{"name":"questionId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseQuestionLogGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/question/authors":{"get":{"tags":["вопросы"],"operationId":"getAuthors","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"array","items":{"type":"string","format":"uuid"}}}}}}}},"/api/v2/progress":{"get":{"tags":["текущий прогресс игрока"],"summary":"получение текущего прогресса игрока","description":"Позволяет получить список всех доступных и пройденных текущим игроком нод","operationId":"getCurrentPlayerProgress","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponsePlayerProgressGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/progress/{playerId}":{"get":{"tags":["текущий прогресс игрока"],"summary":"получение прогресса игрока","description":"Позволяет получить список всех доступных и пройденных игроком нод по id игрока","operationId":"getProgress","parameters":[{"name":"playerId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponsePlayerProgressGetDTO"}}}}},"security":[{"token":[]}]},"delete":{"tags":["текущий прогресс игрока"],"summary":"СТРОГО ДЛЯ ЖЕНИ В ФРОНТ НЕ ДОБАВЛЯТЬ","description":"Позволяет полностью удалить прогресс игрока","operationId":"deletePlayerProgress","parameters":[{"name":"playerId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponse"}}}}},"security":[{"token":[]}]}},"/api/v2/progress/universal/{rootNodeId}":{"get":{"tags":["текущий прогресс игрока"],"summary":"получение текущего прогресса игрока для одной вселенной","description":"Позволяет получить список всех доступных и пройденных текущим игроком нод для одной вселенной","operationId":"getCurrentPlayerProgress_1","parameters":[{"name":"rootNodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponsePlayerProgressGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/node/ingame/{nodeId}":{"get":{"tags":["узлы дерева вопросов, версия вселенных в игре"],"summary":"получение узла в версиии вселенныхв игре","description":"Позволяет получить узел и его связи","operationId":"getNode","parameters":[{"name":"nodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/node/ingame/tree/{rootNodeId}":{"get":{"tags":["узлы дерева вопросов, версия вселенных в игре"],"summary":"получение дерева в версиии вселенных в игре","description":"Позволяет получить дерево вселенной","operationId":"getTree","parameters":[{"name":"rootNodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseMapIntegerListNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/node/ingame/root":{"get":{"tags":["узлы дерева вопросов, версия вселенных в игре"],"summary":"получение корневых узлов в версиии вселенных в игре","description":"Позволяет получить корневые узлы и их связи","operationId":"getRootNodes","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/node/ingame/nodes/{rootNodeId}":{"get":{"tags":["узлы дерева вопросов, версия вселенных в игре"],"summary":"получение списка нод вселенной в версиии вселенныхв игре","description":"Позволяет получить список нод дерева вселенной","operationId":"getNodesInTheTree","parameters":[{"name":"rootNodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/node/dev/root":{"get":{"tags":["узлы дерева вопросов, девелопперская версия вселенных"],"summary":"получение корневых узлов в девелопперской версии вселенных","description":"Позволяет получить корневые узлы и их связи","operationId":"getRootNodes_1","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/node/dev/nodes/{rootNodeId}":{"get":{"tags":["узлы дерева вопросов, девелопперская версия вселенных"],"summary":"получение списка нод вселенной в девелоперской версии вселенных","description":"Позволяет получить список нод дерева вселенной","operationId":"getNodesInTheTree_1","parameters":[{"name":"rootNodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/node/archive/{nodeId}":{"get":{"tags":["узлы дерева вопросов, архивная версия вселенных"],"summary":"получение узла в архивной версиии вселенных","description":"Позволяет получить узел и его связи","operationId":"getNode_2","parameters":[{"name":"nodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/node/archive/root":{"get":{"tags":["узлы дерева вопросов, архивная версия вселенных"],"summary":"получение корневых узлов в архивной версиии вселенных","description":"Позволяет получить корневые узлы и их связи","operationId":"getRootNodes_2","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/node/archive/nodes/{rootNodeId}":{"get":{"tags":["узлы дерева вопросов, архивная версия вселенных"],"summary":"получение списка нод вселенной в версиии вселенных в архиве","description":"Позволяет получить список нод дерева вселенной","operationId":"getNodesInTheTree_2","parameters":[{"name":"rootNodeId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListNodeGetDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/group-of-question/{groupId}":{"get":{"tags":["группы вопросов"],"summary":"получение конкретной группы вопросов","description":"Позволяет получить группу вопросов по ее Id","operationId":"getGroupOfQuestions","parameters":[{"name":"groupId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseGetGroupOfTheQuestionsDTO"}}}}},"security":[{"token":[]}]},"delete":{"tags":["группы вопросов"],"summary":"удаление группы вопросов","description":"Позволяет удалить группу вопросов по id","operationId":"deleteGroupOfTheQuestions","parameters":[{"name":"groupId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseString"}}}}},"security":[{"token":[]}]}},"/api/v2/file/{fileId}":{"get":{"tags":["работа с файлами"],"summary":"загрузка файлов с сервера","description":"позволяет скачать файл к ответу на вопрос","operationId":"downloadFileFromMinIO","parameters":[{"name":"fileId","in":"path","required":true,"schema":{"type":"integer","format":"int32"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"object"}}}}},"security":[{"token":[]}]},"delete":{"tags":["работа с файлами"],"summary":"удаление файлов с сервера","description":"позволяет удалить файл с сервера по его id","operationId":"deleteFileFromMinIO","parameters":[{"name":"fileId","in":"path","required":true,"schema":{"type":"integer","format":"int32"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseString"}}}}},"security":[{"token":[]}]}},"/api/v2/file/files/{questionId}":{"get":{"tags":["работа с файлами"],"summary":"получение ссылок на файлы для вопроса (вопрос с картинками)","description":"позволяет получить ссылки на медиа файлы для вопроса (как сам вопрос так и ответы виде файлов)","operationId":"getListOfFilesForAnswer_1","parameters":[{"name":"questionId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseGetFilesForQuestionDto"}}}}},"security":[{"token":[]}]}},"/api/v2/answer/verification/status":{"get":{"tags":["ответы на вопросы"],"summary":"проверка статуса ответа на вопрос","description":"Позволяет проверить статус ответа на вопрос типа VERIFICATION, если не указан ","operationId":"checkStatusForAnswerForVerificationQuestion","parameters":[{"name":"nodeId","in":"query","required":true,"schema":{"type":"string","format":"uuid"}}],"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseCheckAnswerStatusDTO"}}}}},"security":[{"token":[]}]}},"/api/v2/answer/review":{"get":{"tags":["ответы на вопросы"],"summary":"получение ответов у ментора на рассмотрении","description":"позволяет получить список вопросов находящихся у ментора на рассмотрении","operationId":"getReviewingAnswersForMentor","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListAnswer"}}}}},"security":[{"token":[]}]}},"/api/v2/answer/new":{"get":{"tags":["ответы на вопросы"],"summary":"получение списка новых ответов которые можно взять на рассмотрение ментору","description":"Позволяет получить список новых ответов на вопросы в которых в группу менторов включен запрашивающий ментор","operationId":"getNewAnswersForMentor","responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/BaseResponseListAnswer"}}}}},"security":[{"token":[]}]}}},"components":{"schemas":{"FilterForGetQuestionsDTO":{"type":"object","properties":{"createByUserId":{"type":"string","format":"uuid"},"startPeriodDate":{"type":"string","format":"date-time"},"endPeriodDate":{"type":"string","format":"date-time"},"questionStatus":{"type":"string","enum":["NEW","REVIEW","REJECT","APPROVED","ARCHIVE"],"description":" Backend statuses only; INGAME is frontend-derived from APPROVED + group."},"typeOfTheQuestion":{"type":"string","enum":["TEST","VERIFICATION","SENTENCE_WITH_GAPS","PAIRS"]},"idGroupOfTheQuestions":{"type":"string"},"oneShot":{"type":"boolean"}}},"BaseResponseMapStringObject":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"object","additionalProperties":{"type":"object"}}}},"QuestionVerificationUpdateDTO":{"required":["category","questionDescription","questionName","quiz"],"type":"object","properties":{"questionName":{"type":"string","description":"Имя вопроса"},"questionDescription":{"type":"string","description":"Описание вопроса"},"quiz":{"$ref":"#/components/schemas/QuizVerificationImpl"},"category":{"type":"array","description":"категория вопроса","items":{"type":"string","description":"категория вопроса","enum":["CATEGORY_1","CATEGORY_2","CATEGORY_3","CATEGORY_4","CATEGORY_5"]}}},"description":"изменение вопроса типа Verification"},"QuizVerificationImpl":{"required":["mentorsGroupId","question"],"type":"object","properties":{"question":{"type":"string","description":"вопрос"},"mentorsGroupId":{"type":"string","description":"группа менторов на проверку ответа","format":"uuid"}},"description":"вопрос"},"BaseResponseQuestionGetDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/QuestionGetDTO"}}},"QuestionGetDTO":{"type":"object","properties":{"id":{"type":"string","description":"Id вопроса","format":"uuid"},"questionName":{"type":"string","description":"Название вопроса","example":"In this place would be name"},"questionDescription":{"type":"string","description":"Описание вопроса","example":"In this place would be description"},"quiz":{"$ref":"#/components/schemas/Quiz"},"createByUserId":{"type":"string","description":"Кем создан вопрос","format":"uuid"},"createDate":{"type":"string","description":"дата создания вопроса","format":"date-time"},"type":{"type":"string","description":"Тип вопроса","example":"In this place would be type of the question","enum":["TEST","VERIFICATION","SENTENCE_WITH_GAPS","PAIRS"]},"category":{"type":"array","description":"Категория вопроса","example":"In this place would be list of categories of the question","items":{"type":"string","description":"Категория вопроса","example":"In this place would be list of categories of the question","enum":["CATEGORY_1","CATEGORY_2","CATEGORY_3","CATEGORY_4","CATEGORY_5"]}},"status":{"type":"string","description":"Статус вопроса на бэке. INGAME вычисляется на фронте при APPROVED + idGroupsOfTheQuestions.length>0","example":"In this place would be status of the question","enum":["NEW","REVIEW","REJECT","APPROVED","DEPRECATED"]},"idGroupsOfTheQuestions":{"uniqueItems":true,"type":"array","description":"id групп в которые входит вопрос","example":"In this place would be id groups, witch this question inside","items":{"type":"string","description":"id групп в которые входит вопрос","format":"uuid"}},"oneShot":{"type":"boolean","description":"признак 'сквозного' вопроса"}},"description":"Получение реквизитов вопроса"},"Quiz":{"required":["question"],"type":"object","properties":{"question":{"type":"string","description":"вопрос"}},"description":"Вопрос","example":"In this place would be question and something else, it depends by type of the question"},"QuestionTestUpdateDTO":{"required":["category","oneShot","questionDescription","questionName","quiz"],"type":"object","properties":{"questionName":{"type":"string","description":"Имя вопроса"},"questionDescription":{"type":"string","description":"Описание вопроса"},"quiz":{"$ref":"#/components/schemas/QuizTestImpl"},"category":{"type":"array","description":"категория вопроса","items":{"type":"string","description":"категория вопроса","enum":["CATEGORY_1","CATEGORY_2","CATEGORY_3","CATEGORY_4","CATEGORY_5"]}},"oneShot":{"type":"boolean","description":"признак 'сквозного' вопроса"}},"description":"изменение вопроса типа Test"},"QuizTestImpl":{"required":["answers","correct_answers","question"],"type":"object","properties":{"question":{"type":"string","description":"вопрос"},"answers":{"type":"array","description":"номера ответов игрока","items":{"type":"string","description":"номера ответов игрока"}},"correct_answers":{"type":"array","description":"правильные номера ответов","items":{"type":"integer","description":"правильные номера ответов","format":"int32"}}},"description":"вопрос"},"QuestionsStatusUpdateDTO":{"required":["status"],"type":"object","properties":{"status":{"type":"string","description":"статус вопроса","enum":["NEW","REVIEW","REJECT","APPROVED","DEPRECATED"]}},"description":"изменение статуса вопроса"},"BaseResponse":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"object"}}},"QuestionSentenceWithGapsUpdateDTO":{"required":["category","oneShot","questionDescription","questionName","quiz"],"type":"object","properties":{"questionName":{"type":"string","description":"Имя вопроса"},"questionDescription":{"type":"string","description":"Описание вопроса"},"quiz":{"$ref":"#/components/schemas/QuizSentenceWithGapsImpl"},"category":{"type":"array","description":"категория вопроса","items":{"type":"string","description":"категория вопроса","enum":["CATEGORY_1","CATEGORY_2","CATEGORY_3","CATEGORY_4","CATEGORY_5"]}},"oneShot":{"type":"boolean","description":"признак 'сквозного' вопроса"}},"description":"Обновление вопроса типа SENTENCE_WITH_GAPS"},"QuizSentenceWithGapsImpl":{"required":["options","question","sentenceFull"],"type":"object","properties":{"question":{"type":"string","description":"вопрос"},"sentenceFull":{"type":"string","description":"Конечное предложение (ответ на вопрос)"},"options":{"type":"array","description":"Слова или знаки препинания, которые надо пропустить, чтобы пользователь сам его ввёл","items":{"type":"string","description":"Слова или знаки препинания, которые надо пропустить, чтобы пользователь сам его ввёл"}}},"description":"вопрос"},"BaseResponseListQuestionGetDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"array","items":{"$ref":"#/components/schemas/QuestionGetDTO"}}}},"QuestionRejectDTO":{"required":["comment"],"type":"object","properties":{"comment":{"type":"string","description":"комментарий"}},"description":"комментирование причины отклонения вопроса"},"QuestionPairsUpdateDTO":{"required":["category","oneShot","questionDescription","questionName","quiz"],"type":"object","properties":{"questionName":{"type":"string","description":"Имя вопроса"},"questionDescription":{"type":"string","description":"Описание вопроса"},"quiz":{"$ref":"#/components/schemas/QuizPairsImpl"},"category":{"type":"array","description":"категория вопроса","items":{"type":"string","description":"категория вопроса","enum":["CATEGORY_1","CATEGORY_2","CATEGORY_3","CATEGORY_4","CATEGORY_5"]}},"oneShot":{"type":"boolean","description":"признак 'сквозного' вопроса"}},"description":"Обновление вопроса типа PAIRS"},"QuizPairsImpl":{"required":["correct_answers","english_words","question","russian_words"],"type":"object","properties":{"question":{"type":"string","description":"вопрос"},"english_words":{"type":"array","description":"английские слова","items":{"type":"string","description":"английские слова"}},"russian_words":{"type":"array","description":"русские слова","items":{"type":"string","description":"русские слова"}},"correct_answers":{"type":"array","description":"правильные номера ответов","items":{"type":"array","description":"правильные номера ответов","items":{"type":"integer","description":"правильные номера ответов","format":"int32"}}}},"description":"вопрос"},"BaseResponsePlayerProgressGetDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/PlayerProgressGetDTO"}}},"CurrentProgress":{"type":"object","properties":{"nodeId":{"type":"string","description":"текущий узел игрока","format":"uuid"},"questionStatus":{"type":"string","description":"Статус узла в прогрессе. Узел без записи в currentProgress недоступен (inactive на фронте). После ANSWERED родителя мок открывает прямых детей как NOT_ANSWERED (не перезаписывая ANSWERED/FROZEN).","enum":["NOT_ANSWERED","WAITING","ANSWERED","FROZEN"]},"currentQuestionId":{"type":"string","description":"текущий вопрос","format":"uuid"},"isOpen":{"type":"boolean","description":"открыта(куплена) ли нода"}},"description":"текущие узлы игрока"},"PlayerProgressGetDTO":{"type":"object","properties":{"currentProgress":{"type":"array","description":"текущие узлы игрока","items":{"$ref":"#/components/schemas/CurrentProgress"}}},"description":"Получение прогресса игрока"},"NodeUpdateDTO":{"required":["groupOfTheQuestionId","isCost","isPaid","masterNodeId","nodeName","nodeStatus","nodeType","x","y"],"type":"object","properties":{"nodeName":{"type":"string","description":"имя ноды"},"groupOfTheQuestionId":{"type":"string","description":"идентификатор группы вопросов","format":"uuid"},"masterNodeId":{"type":"string","description":"идентификатор родительской ноды, значение = 0 - корневая нода","format":"uuid"},"nodeStatus":{"type":"string","description":"статус ноды","enum":["ACTIVE","OFF","DEPRECATED","ARCHIVE"]},"nodeType":{"type":"string","description":"тип ноды","enum":["COMMON","SERIAL"]},"x":{"type":"integer","description":"координата ноды по оси х для отрисовки графического дерева","format":"int32"},"y":{"type":"integer","description":"координата ноды по оси у для отрисовки графического дерева","format":"int32"},"isCost":{"type":"boolean","description":"нода со стоимостью"},"isPaid":{"type":"boolean","description":"платная нода"}},"description":"Изменение ноды"},"BaseResponseNodeGetDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/NodeGetDTO"}}},"GetGroupOfTheQuestionsDTO":{"type":"object","properties":{"groupId":{"type":"string","description":"Id группы вопросов","format":"uuid"},"groupName":{"type":"string","description":"имя группы вопросов"},"questionsId":{"uniqueItems":true,"type":"array","description":"Список Id вопросов принадлежащих группе","items":{"type":"string","description":"Список Id вопросов принадлежащих группе","format":"uuid"}},"linkedNodesId":{"uniqueItems":true,"type":"array","description":"Список Id узлов использующих группу","items":{"type":"string","description":"Список Id узлов использующих группу","format":"uuid"}}},"description":"Получение реквизитов группы вопросов"},"NodeGetDTO":{"type":"object","properties":{"id":{"type":"string","description":"идентификатор ноды","format":"uuid"},"nodeName":{"type":"string","description":"имя ноды"},"groupOfTheQuestion":{"$ref":"#/components/schemas/GetGroupOfTheQuestionsDTO"},"masterNodeId":{"type":"string","description":"идентификатор родительской ноды","format":"uuid"},"nodeStatus":{"type":"string","description":"статус ноды","enum":["ACTIVE","OFF","DEPRECATED","ARCHIVE"]},"nodeType":{"type":"string","description":"тип ноды","enum":["COMMON","SERIAL"]},"changeDate":{"type":"string","description":"дата создания/последнего изменения ноды","format":"date-time"},"activeSlaveNodesId":{"uniqueItems":true,"type":"array","description":"список активных дочерних нод","items":{"type":"string","description":"список активных дочерних нод","format":"uuid"}},"notActiveSlaveNodesId":{"uniqueItems":true,"type":"array","description":"список не активных дочерних нод","items":{"type":"string","description":"список не активных дочерних нод","format":"uuid"}},"x":{"type":"integer","description":"координата ноды по оси х для отрисовки графического дерева","format":"int32"},"y":{"type":"integer","description":"координата ноды по оси у для отрисовки графического дерева","format":"int32"},"isCost":{"type":"boolean","description":"нода со стоимостью"},"isPaid":{"type":"boolean","description":"платная нода"}},"description":"Получение ноды. У каждой ноды, включая корень, ожидается groupOfTheQuestion с questionsId как массивом (не null)."},"NodeSetXYDTO":{"required":["x","y"],"type":"object","properties":{"x":{"type":"integer","description":"координата ноды по оси х для отрисовки графического дерева","format":"int32"},"y":{"type":"integer","description":"координата ноды по оси у для отрисовки графического дерева","format":"int32"}},"description":"установка координат ноды для отрисовки графического дерева"},"AddOrDeleteQuestionIdInTheGroupOfTheQuestionsDTO":{"required":["groupId","questionId"],"type":"object","properties":{"groupId":{"type":"string","description":"id группы вопросов","format":"uuid"},"questionId":{"type":"string","description":"id","format":"uuid"}},"description":"добавление или удаление id вопроса из группы вопросов"},"BaseResponseGetGroupOfTheQuestionsDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/GetGroupOfTheQuestionsDTO"}}},"UpdateNameGroupOfTheQuestionDTO":{"required":["groupId","groupName"],"type":"object","properties":{"groupId":{"type":"string","description":"id группы вопросов","format":"uuid"},"groupName":{"type":"string","description":"имя группы вопросов"}},"description":"Изменение имени группы вопросов"},"CreateOrUpdateGroupOfTheMentorsDTO":{"required":["mentorsGroupName","mentorsId"],"type":"object","properties":{"mentorsGroupName":{"type":"string","description":"Имя группы менторов"},"mentorsId":{"uniqueItems":true,"type":"array","description":"Список Id менторов состоящих в группе","items":{"type":"string","description":"Список Id менторов состоящих в группе","format":"uuid"}}},"description":"Создание или изменение группы менторов"},"BaseResponseGetGroupOfTheMentorsDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/GetGroupOfTheMentorsDTO"}}},"GetGroupOfTheMentorsDTO":{"type":"object","properties":{"mentorsGroupId":{"type":"string","description":"id группы","format":"uuid"},"mentorsGroupName":{"type":"string","description":"имя группы"},"mentorsId":{"uniqueItems":true,"type":"array","description":"Список Id менторов состоящих в группе","items":{"type":"string","description":"Список Id менторов состоящих в группе","format":"uuid"}}},"description":"Получение реквизитовгруппы менторов"},"UpdateIngameBrunchDTO":{"required":["isDestinationToRemoveToArchiveBrunch","rootNodeId"],"type":"object","properties":{"rootNodeId":{"type":"string","description":"Id рутовой ноды вселенной для переноса в игровую ветку","format":"uuid"},"isDestinationToRemoveToArchiveBrunch":{"type":"boolean","description":"флаг переноса заменяемых вселенных в архив"}},"description":"обновление игровой ветки вселенных"},"UpdateDevBrunchDTO":{"required":["rootNodeId","sourceBrunch"],"type":"object","properties":{"rootNodeId":{"type":"string","description":"Id рутовой ноды вселенной для переноса в девелоперскую ветку","format":"uuid"},"sourceBrunch":{"type":"string","description":"из какой ветки копировать вселенную - 'archive' или 'ingame'"}},"description":"обновление игровой ветки вселенных"},"GetAnswerForReviewDTO":{"required":["nodeId","playerId"],"type":"object","properties":{"playerId":{"type":"string","description":"ид игрока ответившего на вопрос","format":"uuid"},"nodeId":{"type":"string","description":"ид ноды к которой привязан вопрос","format":"uuid"}}},"CreateQuestionDTO":{"required":["questionType"],"type":"object","properties":{"questionType":{"type":"string","description":"Тип вопроса","enum":["TEST","VERIFICATION","SENTENCE_WITH_GAPS","PAIRS"]}},"description":"Создание вопроса"},"NodeCreateDTO":{"required":["isCost","isPaid","masterNodeId","nodeName","nodeType"],"type":"object","properties":{"nodeName":{"type":"string","description":"имя ноды"},"masterNodeId":{"type":"string","description":"идентификатор родительской ноды, значение = 0 - корневая нода","format":"uuid"},"nodeType":{"type":"string","description":"тип ноды","enum":["COMMON","SERIAL"]},"isCost":{"type":"boolean","description":"нода со стоимостью"},"isPaid":{"type":"boolean","description":"платная нода"}},"description":"Создание или изменение ноды"},"CreateGroupOfTheQuestionsDTO":{"required":["groupName","questionsId"],"type":"object","properties":{"groupName":{"type":"string","description":"имя группы вопросов"},"questionsId":{"uniqueItems":true,"type":"array","description":"список вопросов принадлежащих к группе","items":{"type":"string","description":"список вопросов принадлежащих к группе","format":"uuid"}}},"description":"Создание группы вопросов"},"FileAttributesForAnswerCreateDTO":{"required":["nodeId"],"type":"object","properties":{"nodeId":{"type":"string","description":"id ноды с вопросом к ответу на который прикрепляется файл","format":"uuid"}},"description":"создание атрибутов к сохраняемому файлу"},"BaseResponseFileDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/FileDTO"}}},"FileDTO":{"type":"object","properties":{"fileId":{"type":"integer","description":"id файла","format":"int32"},"fileName":{"type":"string","description":"имя файла"}},"description":"получение атрибутов к сохраненному файлу"},"FileAttributesGetDTO":{"required":["nodeId","playerId"],"type":"object","properties":{"playerId":{"type":"string","description":"id игрока который отвечает на вопрос (прикрепил файлы)","format":"uuid"},"nodeId":{"type":"string","description":"id ноды с вопросом к ответу на который прикреплены файлы","format":"uuid"}},"description":"отправки значений для получения списка атрибутов к сохраненным файлам"},"BaseResponseFileAttributesReceiveForGetDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/FileAttributesReceiveForGetDTO"}}},"FileAttributesReceiveForGetDTO":{"type":"object","properties":{"fileDTOList":{"type":"array","description":"список атрибутов к сохраненным файлам","items":{"$ref":"#/components/schemas/FileDTO"}}},"description":"получение списка атрибутов к сохраненным файлам"},"FileAttributesForQuestionBodyDto":{"required":["fileType","questionId"],"type":"object","properties":{"questionId":{"type":"string","description":"id вопроса, к которому прикрепляется файл","format":"uuid"},"fileType":{"type":"string","description":"тип прикрепляемого файл","enum":["JPG","MP3"]}},"description":"передача атрибутов для тела вопроса к загружаемому файлу"},"BaseResponseString":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"string"}}},"FileAttributesForQuestionAnswersDto":{"required":["answerNumber","questionId"],"type":"object","properties":{"questionId":{"type":"string","description":"id вопроса, к которому прикрепляется файл","format":"uuid"},"answerNumber":{"type":"integer","description":"номер ответа к которому прикрепляется файл","format":"int32"}},"description":"передача атрибутов для вариантов ответов к вопросу для загружаемого файла"},"SendAnswerForVerificationQuestionDTO":{"required":["answer","nodeId"],"type":"object","properties":{"nodeId":{"type":"string","description":"ид ноды к которой привязан вопрос","format":"uuid"},"answer":{"type":"string","description":"ответ на вопрос"}},"description":"Отправка ответа на вопрос типа Verification"},"Answer":{"type":"object","properties":{"playerId":{"type":"string","format":"uuid"},"nodeId":{"type":"string","format":"uuid"},"answer":{"type":"string"},"answerStatus":{"type":"string","enum":["NEW","REVIEW","APPROVED","REJECTED"]},"mentorId":{"type":"string","format":"uuid"},"mentorsComment":{"type":"string"}}},"BaseResponseAnswer":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/Answer"}}},"CheckAnswerForVerificationQuestionDTO":{"required":["answerStatus","mentorsComment","nodeId","playerId"],"type":"object","properties":{"playerId":{"type":"string","description":"ид игрока ответившего на вопрос","format":"uuid"},"nodeId":{"type":"string","description":"ид ноды к которой привязан вопрос","format":"uuid"},"answerStatus":{"type":"string","description":"Статус ответа на вопрос","enum":["NEW","REVIEW","APPROVED","REJECTED"]},"mentorsComment":{"type":"string","description":"комментарий ментора"}},"description":"Проверка ответа на вопрос типа Verification"},"SendAnswerForTestQuestionDTO":{"required":["answers","nodeId"],"type":"object","properties":{"nodeId":{"type":"string","description":"ид ноды к которой привязан вопрос","format":"uuid"},"answers":{"type":"array","description":"ответ на вопрос","items":{"type":"integer","description":"ответ на вопрос","format":"int32"}}},"description":"Отпроавка ответа на вопрос типа Test"},"SendAnswerForSentenceWithGapsQuestionDTO":{"type":"object","properties":{"nodeId":{"type":"string","description":"id ноды к которой привязан вопрос","format":"uuid"},"answers":{"type":"array","description":"ответ на вопрос","items":{"type":"string","description":"ответ на вопрос"}}},"description":"Отправка ответа на вопрос типа SENTENCE_WITH_GAPS"},"SendAnswerForPairsQuestionDTO":{"type":"object","properties":{"nodeId":{"type":"string","description":"id ноды к которой привязан вопрос","format":"uuid"},"answers":{"type":"array","description":"ответ на вопрос","items":{"type":"array","description":"ответ на вопрос","items":{"type":"integer","description":"ответ на вопрос","format":"int32"}}}},"description":"Отправка ответа на вопрос типа PAIRS"},"BaseResponseQuestionLogGetDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/QuestionLogGetDTO"}}},"LoggedQuestionDTO":{"type":"object","properties":{"id":{"type":"string","description":"Id вопроса","format":"uuid"},"questionName":{"type":"string","description":"Название вопроса"},"questionDescription":{"type":"string","description":"Описание вопроса"},"quiz":{"$ref":"#/components/schemas/Quiz"},"createByUserId":{"type":"string","description":"Кем создан вопрос","format":"uuid"},"type":{"type":"string","description":"Тип вопроса","enum":["TEST","VERIFICATION","SENTENCE_WITH_GAPS","PAIRS"]},"category":{"type":"array","description":"Категория вопроса","items":{"type":"string","description":"Категория вопроса","enum":["CATEGORY_1","CATEGORY_2","CATEGORY_3","CATEGORY_4","CATEGORY_5"]}},"comment":{"type":"string","description":"Комментарий эксперта к вопросу"}}},"QuestionLogGetDTO":{"type":"object","properties":{"questionLog":{"type":"object","additionalProperties":{"$ref":"#/components/schemas/LoggedQuestionDTO"}}}},"BaseResponseMapIntegerListNodeGetDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"object","additionalProperties":{"type":"array","items":{"$ref":"#/components/schemas/NodeGetDTO"}}}}},"BaseResponseListNodeGetDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"array","items":{"$ref":"#/components/schemas/NodeGetDTO"}}}},"BaseResponseListGetGroupOfTheQuestionsDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"array","items":{"$ref":"#/components/schemas/GetGroupOfTheQuestionsDTO"}}}},"BaseResponseListGetGroupOfTheMentorsDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"array","items":{"$ref":"#/components/schemas/GetGroupOfTheMentorsDTO"}}}},"BaseResponseGetFilesForQuestionDto":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/GetFilesForQuestionDto"}}},"GetFilesForQuestionDto":{"type":"object","properties":{"mediaForBodyQuestion":{"type":"object","description":"Медиа тела вопроса. Всегда присутствует (может быть {}). Ключи: JPG | MP3; значения — raw base64 без data:-префикса.","properties":{"JPG":{"type":"string","description":"Base64 JPEG"},"MP3":{"type":"string","description":"Base64 MP3"}},"additionalProperties":false},"jpgsForAnswersQuestion":{"type":"object","description":"Картинки вариантов ответа. Всегда присутствует (может быть {}). Ключ — номер ответа (строка), значение — Base64 JPG.","additionalProperties":{"type":"string"}}},"description":"Медиафайлы вопроса, закодированные в Base64","required":["mediaForBodyQuestion","jpgsForAnswersQuestion"]},"BaseResponseCheckAnswerStatusDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/CheckAnswerStatusDTO"}}},"CheckAnswerStatusDTO":{"type":"object","properties":{"answerStatus":{"type":"string","enum":["NEW","REVIEW","APPROVED","REJECTED"]}}},"BaseResponseListAnswer":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"array","items":{"$ref":"#/components/schemas/Answer"}}}},"BaseResponseObject":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"type":"object"}}},"QuestionListPagination":{"type":"object","properties":{"amountOfRecordsAtAll":{"type":"integer","description":"всего записей по фильтру"}},"required":["amountOfRecordsAtAll"]},"QuestionPutListDTO":{"type":"object","properties":{"ListOfTheQuestion":{"type":"array","items":{"$ref":"#/components/schemas/QuestionGetDTO"}},"Pagination":{"$ref":"#/components/schemas/QuestionListPagination"}},"required":["ListOfTheQuestion","Pagination"]},"BaseResponseQuestionPutListDTO":{"type":"object","properties":{"status":{"type":"integer","format":"int32"},"message":{"type":"string"},"data":{"$ref":"#/components/schemas/QuestionPutListDTO"}}}},"securitySchemes":{"token":{"type":"http","scheme":"bearer","bearerFormat":"JWT"}}}}
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Game-Engine Service doc"
+  },
+  "servers": [
+    {
+      "url": "/game-engine"
+    }
+  ],
+  "tags": [
+    {
+      "name": "группы менторов",
+      "description": "позволяет создавать/изменять/удалять группы менторов"
+    },
+    {
+      "name": "текущий прогресс игрока",
+      "description": "управляет текущим прогрессом игрока"
+    },
+    {
+      "name": "хелпер",
+      "description": "спомогательные ендпоинт для backend"
+    },
+    {
+      "name": "группы вопросов",
+      "description": "позволяет создавать/изменять/удалять группы вопросов"
+    },
+    {
+      "name": "вопросы",
+      "description": "позволяет создавать/изменять/удалять вопросы"
+    },
+    {
+      "name": "ответы на вопросы",
+      "description": "позволяет игрокам и менторам работать с ответами на вопросы"
+    },
+    {
+      "name": "работа с файлами",
+      "description": "позволяет загружать/просматривать/удалять файлы к ответам"
+    },
+    {
+      "name": "узлы дерева вопросов, архивная версия вселенных",
+      "description": "управляет узлами дерева"
+    },
+    {
+      "name": "работа с ветками",
+      "description": "позволяет администраторам работать с версиями вселенных"
+    },
+    {
+      "name": "узлы дерева вопросов, версия вселенных в игре",
+      "description": "управляет узлами дерева"
+    },
+    {
+      "name": "узлы дерева вопросов, девелопперская версия вселенных",
+      "description": "управляет узлами дерева"
+    }
+  ],
+  "paths": {
+    "/api/v2/question": {
+      "get": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "получение всех вопросов в игре",
+        "description": "Позволяет получить все вопросы в игре",
+        "operationId": "findAllQuestion",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListQuestionGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "получение всех вопросов в игре с указанным фильтром",
+        "description": "Позволяет получить все вопросы в игре по заданной фильтраци",
+        "operationId": "findAllQuestionWithFilter",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterForGetQuestionsDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseQuestionPutListDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "создание вопроса",
+        "description": "Позволяет создать новый вопрос указанного типа",
+        "operationId": "createNewQuestion",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuestionDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseQuestionGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/question/verification/{questionId}": {
+      "put": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "обновление вопроса с проверкой ментором",
+        "description": "Позволяет изменить существующий вопрос типа VERIFICATION",
+        "operationId": "updateVerificationQuestion",
+        "parameters": [
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionVerificationUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseQuestionGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/question/test/{questionId}": {
+      "put": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "обновление теста",
+        "description": "Позволяет изменить существующий вопрос типа TEST",
+        "operationId": "updateTestQuestion",
+        "parameters": [
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionTestUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseQuestionGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/question/status/{questionId}": {
+      "put": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "изменение статуса вопроса",
+        "description": "Позволяет изменить статус вопроса",
+        "operationId": "updateQuestionStatus",
+        "parameters": [
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionsStatusUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/question/sentence_with_gaps/{id}": {
+      "put": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "Тип вопроса предложение с пропусками",
+        "description": "Позволяет обновить вопрос типа SENTENCE_WITH_GAPS по id",
+        "operationId": "updateQuestionSentenceWithGapsById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionSentenceWithGapsUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListQuestionGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/question/reject/{questionId}": {
+      "put": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "отклонение вопроса экспертом вопроса",
+        "description": "Позволяет отклонить вопрос и прокомментировать ",
+        "operationId": "rejectQuestion",
+        "parameters": [
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionRejectDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseQuestionGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/question/pairs/{id}": {
+      "put": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "Пары слов",
+        "description": "Позволяет обновить вопрос типа PAIRS по id",
+        "operationId": "updateQuestionPairsById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionPairsUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListQuestionGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/progress/{nodeId}": {
+      "put": {
+        "tags": [
+          "текущий прогресс игрока"
+        ],
+        "summary": "Открытие ноды",
+        "description": "Позволяет открыть ноду которая требует наличия стоимости/оплаты ",
+        "operationId": "openNodeInPlayerProgress",
+        "parameters": [
+          {
+            "name": "nodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePlayerProgressGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/dev/{nodeId}": {
+      "get": {
+        "tags": [
+          "узлы дерева вопросов, девелопперская версия вселенных"
+        ],
+        "summary": "получение узла в девелопперской версии вселенных",
+        "description": "Позволяет получить узел и его связи",
+        "operationId": "getNode_1",
+        "parameters": [
+          {
+            "name": "nodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "узлы дерева вопросов, девелопперская версия вселенных"
+        ],
+        "summary": "изменение узла в девелопперской версии вселенных",
+        "description": "позволяет изменить узел и родителя",
+        "operationId": "updateNode",
+        "parameters": [
+          {
+            "name": "nodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NodeUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "узлы дерева вопросов, девелопперская версия вселенных"
+        ],
+        "summary": "удаление узла в девелопперской версии вселенных",
+        "description": "позволяет удалить узел",
+        "operationId": "deleteNode",
+        "parameters": [
+          {
+            "name": "nodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseString"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/dev/positioning/{nodeId}": {
+      "put": {
+        "tags": [
+          "узлы дерева вопросов, девелопперская версия вселенных"
+        ],
+        "summary": "изменение координат узла в девелопперской версии вселенных",
+        "description": "позволяет изменить координаты узла",
+        "operationId": "updateNodePosition",
+        "parameters": [
+          {
+            "name": "nodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NodeSetXYDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/helper/graph": {
+      "put": {
+        "tags": [
+          "хелпер"
+        ],
+        "summary": "упорядочивание узлов в девелопперской версии вселенных",
+        "description": "Позволяет упорядочить граф узлов",
+        "operationId": "buildGraph",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "rootNodeId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/group-of-question/delete-question": {
+      "put": {
+        "tags": [
+          "группы вопросов"
+        ],
+        "summary": "удаление вопроса из группы вопросов",
+        "description": "Позволяет удалить вопрос из группу вопросов",
+        "operationId": "deleteQuestionInTheGroupOfQuestions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddOrDeleteQuestionIdInTheGroupOfTheQuestionsDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseGetGroupOfTheQuestionsDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/group-of-question/change-name": {
+      "put": {
+        "tags": [
+          "группы вопросов"
+        ],
+        "summary": "изменение имени группы вопросов",
+        "description": "Позволяет изменить имя группы вопросов",
+        "operationId": "updateNameGroupOfQuestions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNameGroupOfTheQuestionDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseGetGroupOfTheQuestionsDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/group-of-question/add-question": {
+      "put": {
+        "tags": [
+          "группы вопросов"
+        ],
+        "summary": "добавление вопроса в группу вопросов",
+        "description": "Позволяет добавить вопрос в группу вопросов",
+        "operationId": "addQuestionInTheGroupOfQuestions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddOrDeleteQuestionIdInTheGroupOfTheQuestionsDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseGetGroupOfTheQuestionsDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/group-of-mentors/{mentorsGroupId}": {
+      "get": {
+        "tags": [
+          "группы менторов"
+        ],
+        "summary": "получение конкретной группы менторов",
+        "description": "Позволяет получить группу менторов по ее Id",
+        "operationId": "getGroupOfTheMentors",
+        "parameters": [
+          {
+            "name": "mentorsGroupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseGetGroupOfTheMentorsDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "группы менторов"
+        ],
+        "summary": "изменение группы менторов",
+        "description": "Позволяет изменить группу менторов по ее Id",
+        "operationId": "updateGroupOTheMentors",
+        "parameters": [
+          {
+            "name": "mentorsGroupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateGroupOfTheMentorsDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseGetGroupOfTheMentorsDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "группы менторов"
+        ],
+        "summary": "удаление группы менторов",
+        "description": "Позволяет удалить группу менторов по ее Id",
+        "operationId": "deleteGroupOfTheMentors",
+        "parameters": [
+          {
+            "name": "mentorsGroupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/brunch/ingame": {
+      "put": {
+        "tags": [
+          "работа с ветками"
+        ],
+        "summary": "перенос девелоперской ветки в игровую",
+        "description": "позволяет перенести девелоперскую ветку в игровую",
+        "operationId": "updateInGameBrunch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateIngameBrunchDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/brunch/dev": {
+      "put": {
+        "tags": [
+          "работа с ветками"
+        ],
+        "summary": "перенос ветки в девелоперскую",
+        "description": "позволяет перенести игровую или архивную  ветку в девелоперскую",
+        "operationId": "updateDevBrunch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDevBrunchDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/answer/mentor": {
+      "put": {
+        "tags": [
+          "ответы на вопросы"
+        ],
+        "summary": "закрепление ответа на рассмотрении за ментором",
+        "description": "позволяет закрепить ответ на вопрос за ментором для рассмотрения",
+        "operationId": "getAnswerForReview",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAnswerForReviewDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/dev": {
+      "post": {
+        "tags": [
+          "узлы дерева вопросов, девелопперская версия вселенных"
+        ],
+        "summary": "создание узла в девелопперской версии вселенных",
+        "description": "Позволяет создать узел и привязать к родителю",
+        "operationId": "createNode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NodeCreateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/group-of-question": {
+      "get": {
+        "tags": [
+          "группы вопросов"
+        ],
+        "summary": "получение списка групп вопросов",
+        "description": "Позволяет получить список всех доступных групп вопросов",
+        "operationId": "getAllGroupsOfQuestions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListGetGroupOfTheQuestionsDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "группы вопросов"
+        ],
+        "summary": "создание новой группы вопросов",
+        "description": "Позволяет создать новую группу вопросов",
+        "operationId": "createNewGroupOfTheQuestions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGroupOfTheQuestionsDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseGetGroupOfTheQuestionsDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/group-of-mentors": {
+      "get": {
+        "tags": [
+          "группы менторов"
+        ],
+        "summary": "получение списка групп менторов",
+        "description": "Позволяет получить список всех доступных групп менторов",
+        "operationId": "getAllGroupsOfTheMentors",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListGetGroupOfTheMentorsDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "группы менторов"
+        ],
+        "summary": "создание новой группы менторов",
+        "description": "Позволяет создать новую группу менторов",
+        "operationId": "createNewGroupOfTheMentors",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateGroupOfTheMentorsDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseGetGroupOfTheMentorsDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/file": {
+      "post": {
+        "tags": [
+          "работа с файлами"
+        ],
+        "summary": "загрузка файла на сервер к ответу игрока (игрок отвечает на вопрос)",
+        "description": "позволяет загрузить файл к ответу на вопрос и возвращает новое имя файла",
+        "operationId": "uploadFileToMinIoForPlayer",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "attributes",
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "attributes": {
+                    "$ref": "#/components/schemas/FileAttributesForAnswerCreateDTO"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseFileDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/file/list": {
+      "post": {
+        "tags": [
+          "работа с файлами"
+        ],
+        "summary": "получение списка имен файлов",
+        "description": "позволяет получить список имен файлов прикрепленных к ответу на вопрос",
+        "operationId": "getListOfFilesForAnswer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileAttributesGetDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseFileAttributesReceiveForGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/file/body": {
+      "post": {
+        "tags": [
+          "работа с файлами"
+        ],
+        "summary": "загрузка файла на сервер к телу вопроса (создание вопроса)",
+        "description": "позволяет загрузить файл к телу вопроса (создание вопроса)",
+        "operationId": "uploadFileToMinIoForQuestionBody",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "attributes",
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "attributes": {
+                    "$ref": "#/components/schemas/FileAttributesForQuestionBodyDto"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseString"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/file/answers": {
+      "post": {
+        "tags": [
+          "работа с файлами"
+        ],
+        "summary": "загрузка файла на сервер к одному из ответов на вопрос (создание вопроса)",
+        "description": "позволяет загрузить файл для ответа к вопросу (создание вопроса)",
+        "operationId": "uploadFileToMinIoForQuestionBody_1",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "attributes",
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "attributes": {
+                    "$ref": "#/components/schemas/FileAttributesForQuestionAnswersDto"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseString"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/answer/verification/send": {
+      "post": {
+        "tags": [
+          "ответы на вопросы"
+        ],
+        "summary": "отправка ответа на вопрос на проверку ментору",
+        "description": "Позволяет отправить на проверку ответ на вопрос типа VERIFICATION",
+        "operationId": "sendAnswerForVerificationQuestionToCheck",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendAnswerForVerificationQuestionDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseAnswer"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/answer/verification/check": {
+      "post": {
+        "tags": [
+          "ответы на вопросы"
+        ],
+        "summary": "проверка ответа на вопрос ментором",
+        "description": "Позволяет проверить ответ вопрос типа VERIFICATION (изменить статус ответа, оставить комментарий)",
+        "operationId": "checkAnswerForVerificationQuestion",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckAnswerForVerificationQuestionDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePlayerProgressGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/answer/test/send": {
+      "post": {
+        "tags": [
+          "ответы на вопросы"
+        ],
+        "summary": "отправка теста на проверку",
+        "description": "Позволяет отправить вопрос типа TEST на автоматическую проверку, при правильном ответе начисляется опыт и награда, при неверном увеличивается счетчик неверных ответов на 1",
+        "operationId": "sendAnswerForTestQuestionToCheck",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendAnswerForTestQuestionDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePlayerProgressGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/answer/sentence_with_gaps/send": {
+      "post": {
+        "tags": [
+          "ответы на вопросы"
+        ],
+        "summary": "отправка вопроса типа SENTENCE_WITH_GAPS на проверку",
+        "description": "Позволяет отправить вопрос типа SENTENCE_WITH_GAPS на автоматическую проверку, при правильном ответе начисляется опыт и награда, при неверном увеличивается счетчик неверных ответов на 1",
+        "operationId": "sendAnswerForSentenceWithGapsQuestionToCheck",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendAnswerForSentenceWithGapsQuestionDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePlayerProgressGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/answer/pairs/send": {
+      "post": {
+        "tags": [
+          "ответы на вопросы"
+        ],
+        "summary": "отправка вопроса типа PAIRS на проверку",
+        "description": "Позволяет отправить вопрос типа PAIRS на автоматическую проверку, при правильном ответе начисляется опыт и награда, при неверном увеличивается счетчик неверных ответов на 1",
+        "operationId": "sendAnswerFopPairsQuestionToCheck",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendAnswerForPairsQuestionDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePlayerProgressGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/question/{questionId}": {
+      "get": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "получение вопроса",
+        "description": "Позволяет получить вопрос по id",
+        "operationId": "getQuestion",
+        "parameters": [
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseQuestionGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "удаление вопроса",
+        "description": "Позволяет удалить вопрос по id",
+        "operationId": "deleteQuestion",
+        "parameters": [
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseObject"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/question/logs/{questionId}": {
+      "get": {
+        "tags": [
+          "вопросы"
+        ],
+        "summary": "получение лога изменений вопроса",
+        "description": "Позволяет получить лог изменений по id вопроса",
+        "operationId": "getQuestionLogs",
+        "parameters": [
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseQuestionLogGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/question/authors": {
+      "get": {
+        "tags": [
+          "вопросы"
+        ],
+        "operationId": "getAuthors",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/progress": {
+      "get": {
+        "tags": [
+          "текущий прогресс игрока"
+        ],
+        "summary": "получение текущего прогресса игрока",
+        "description": "Позволяет получить список всех доступных и пройденных текущим игроком нод",
+        "operationId": "getCurrentPlayerProgress",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePlayerProgressGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/progress/{playerId}": {
+      "get": {
+        "tags": [
+          "текущий прогресс игрока"
+        ],
+        "summary": "получение прогресса игрока",
+        "description": "Позволяет получить список всех доступных и пройденных игроком нод по id игрока",
+        "operationId": "getProgress",
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePlayerProgressGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "текущий прогресс игрока"
+        ],
+        "summary": "СТРОГО ДЛЯ ЖЕНИ В ФРОНТ НЕ ДОБАВЛЯТЬ",
+        "description": "Позволяет полностью удалить прогресс игрока",
+        "operationId": "deletePlayerProgress",
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/progress/universal/{rootNodeId}": {
+      "get": {
+        "tags": [
+          "текущий прогресс игрока"
+        ],
+        "summary": "получение текущего прогресса игрока для одной вселенной",
+        "description": "Позволяет получить список всех доступных и пройденных текущим игроком нод для одной вселенной",
+        "operationId": "getCurrentPlayerProgress_1",
+        "parameters": [
+          {
+            "name": "rootNodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponsePlayerProgressGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/ingame/{nodeId}": {
+      "get": {
+        "tags": [
+          "узлы дерева вопросов, версия вселенных в игре"
+        ],
+        "summary": "получение узла в версиии вселенныхв игре",
+        "description": "Позволяет получить узел и его связи",
+        "operationId": "getNode",
+        "parameters": [
+          {
+            "name": "nodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/ingame/tree/{rootNodeId}": {
+      "get": {
+        "tags": [
+          "узлы дерева вопросов, версия вселенных в игре"
+        ],
+        "summary": "получение дерева в версиии вселенных в игре",
+        "description": "Позволяет получить дерево вселенной",
+        "operationId": "getTree",
+        "parameters": [
+          {
+            "name": "rootNodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseMapIntegerListNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/ingame/root": {
+      "get": {
+        "tags": [
+          "узлы дерева вопросов, версия вселенных в игре"
+        ],
+        "summary": "получение корневых узлов в версиии вселенных в игре",
+        "description": "Позволяет получить корневые узлы и их связи",
+        "operationId": "getRootNodes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/ingame/nodes/{rootNodeId}": {
+      "get": {
+        "tags": [
+          "узлы дерева вопросов, версия вселенных в игре"
+        ],
+        "summary": "получение списка нод вселенной в версиии вселенныхв игре",
+        "description": "Позволяет получить список нод дерева вселенной",
+        "operationId": "getNodesInTheTree",
+        "parameters": [
+          {
+            "name": "rootNodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/dev/root": {
+      "get": {
+        "tags": [
+          "узлы дерева вопросов, девелопперская версия вселенных"
+        ],
+        "summary": "получение корневых узлов в девелопперской версии вселенных",
+        "description": "Позволяет получить корневые узлы и их связи",
+        "operationId": "getRootNodes_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/dev/nodes/{rootNodeId}": {
+      "get": {
+        "tags": [
+          "узлы дерева вопросов, девелопперская версия вселенных"
+        ],
+        "summary": "получение списка нод вселенной в девелоперской версии вселенных",
+        "description": "Позволяет получить список нод дерева вселенной",
+        "operationId": "getNodesInTheTree_1",
+        "parameters": [
+          {
+            "name": "rootNodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/archive/{nodeId}": {
+      "get": {
+        "tags": [
+          "узлы дерева вопросов, архивная версия вселенных"
+        ],
+        "summary": "получение узла в архивной версиии вселенных",
+        "description": "Позволяет получить узел и его связи",
+        "operationId": "getNode_2",
+        "parameters": [
+          {
+            "name": "nodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/archive/root": {
+      "get": {
+        "tags": [
+          "узлы дерева вопросов, архивная версия вселенных"
+        ],
+        "summary": "получение корневых узлов в архивной версиии вселенных",
+        "description": "Позволяет получить корневые узлы и их связи",
+        "operationId": "getRootNodes_2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/node/archive/nodes/{rootNodeId}": {
+      "get": {
+        "tags": [
+          "узлы дерева вопросов, архивная версия вселенных"
+        ],
+        "summary": "получение списка нод вселенной в версиии вселенных в архиве",
+        "description": "Позволяет получить список нод дерева вселенной",
+        "operationId": "getNodesInTheTree_2",
+        "parameters": [
+          {
+            "name": "rootNodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListNodeGetDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/group-of-question/{groupId}": {
+      "get": {
+        "tags": [
+          "группы вопросов"
+        ],
+        "summary": "получение конкретной группы вопросов",
+        "description": "Позволяет получить группу вопросов по ее Id",
+        "operationId": "getGroupOfQuestions",
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseGetGroupOfTheQuestionsDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "группы вопросов"
+        ],
+        "summary": "удаление группы вопросов",
+        "description": "Позволяет удалить группу вопросов по id",
+        "operationId": "deleteGroupOfTheQuestions",
+        "parameters": [
+          {
+            "name": "groupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseString"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/file/{fileId}": {
+      "get": {
+        "tags": [
+          "работа с файлами"
+        ],
+        "summary": "загрузка файлов с сервера",
+        "description": "позволяет скачать файл к ответу на вопрос",
+        "operationId": "downloadFileFromMinIO",
+        "parameters": [
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "работа с файлами"
+        ],
+        "summary": "удаление файлов с сервера",
+        "description": "позволяет удалить файл с сервера по его id",
+        "operationId": "deleteFileFromMinIO",
+        "parameters": [
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseString"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/file/files/{questionId}": {
+      "get": {
+        "tags": [
+          "работа с файлами"
+        ],
+        "summary": "получение ссылок на файлы для вопроса (вопрос с картинками)",
+        "description": "позволяет получить ссылки на медиа файлы для вопроса (как сам вопрос так и ответы виде файлов)",
+        "operationId": "getListOfFilesForAnswer_1",
+        "parameters": [
+          {
+            "name": "questionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseGetFilesForQuestionDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/answer/verification/status": {
+      "get": {
+        "tags": [
+          "ответы на вопросы"
+        ],
+        "summary": "проверка статуса ответа на вопрос",
+        "description": "Позволяет проверить статус ответа на вопрос типа VERIFICATION, если не указан ",
+        "operationId": "checkStatusForAnswerForVerificationQuestion",
+        "parameters": [
+          {
+            "name": "nodeId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseCheckAnswerStatusDTO"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/answer/review": {
+      "get": {
+        "tags": [
+          "ответы на вопросы"
+        ],
+        "summary": "получение ответов у ментора на рассмотрении",
+        "description": "позволяет получить список вопросов находящихся у ментора на рассмотрении",
+        "operationId": "getReviewingAnswersForMentor",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListAnswer"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    },
+    "/api/v2/answer/new": {
+      "get": {
+        "tags": [
+          "ответы на вопросы"
+        ],
+        "summary": "получение списка новых ответов которые можно взять на рассмотрение ментору",
+        "description": "Позволяет получить список новых ответов на вопросы в которых в группу менторов включен запрашивающий ментор",
+        "operationId": "getNewAnswersForMentor",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListAnswer"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FilterForGetQuestionsDTO": {
+        "type": "object",
+        "properties": {
+          "createByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "startPeriodDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endPeriodDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "questionStatus": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "REVIEW",
+              "REJECT",
+              "APPROVED",
+              "ARCHIVE"
+            ],
+            "description": " Backend statuses only; INGAME is frontend-derived from APPROVED + group."
+          },
+          "typeOfTheQuestion": {
+            "type": "string",
+            "enum": [
+              "TEST",
+              "VERIFICATION",
+              "SENTENCE_WITH_GAPS",
+              "PAIRS"
+            ]
+          },
+          "idGroupOfTheQuestions": {
+            "type": "string"
+          },
+          "oneShot": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BaseResponseMapStringObject": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "QuestionVerificationUpdateDTO": {
+        "required": [
+          "category",
+          "questionDescription",
+          "questionName",
+          "quiz"
+        ],
+        "type": "object",
+        "properties": {
+          "questionName": {
+            "type": "string",
+            "description": "Имя вопроса"
+          },
+          "questionDescription": {
+            "type": "string",
+            "description": "Описание вопроса"
+          },
+          "quiz": {
+            "$ref": "#/components/schemas/QuizVerificationImpl"
+          },
+          "category": {
+            "type": "array",
+            "description": "категория вопроса",
+            "items": {
+              "type": "string",
+              "description": "категория вопроса",
+              "enum": [
+                "CATEGORY_1",
+                "CATEGORY_2",
+                "CATEGORY_3",
+                "CATEGORY_4",
+                "CATEGORY_5"
+              ]
+            }
+          }
+        },
+        "description": "изменение вопроса типа Verification"
+      },
+      "QuizVerificationImpl": {
+        "required": [
+          "mentorsGroupId",
+          "question"
+        ],
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "вопрос"
+          },
+          "mentorsGroupId": {
+            "type": "string",
+            "description": "группа менторов на проверку ответа",
+            "format": "uuid"
+          }
+        },
+        "description": "вопрос"
+      },
+      "BaseResponseQuestionGetDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/QuestionGetDTO"
+          }
+        }
+      },
+      "QuestionGetDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id вопроса",
+            "format": "uuid"
+          },
+          "questionName": {
+            "type": "string",
+            "description": "Название вопроса",
+            "example": "In this place would be name"
+          },
+          "questionDescription": {
+            "type": "string",
+            "description": "Описание вопроса",
+            "example": "In this place would be description"
+          },
+          "quiz": {
+            "$ref": "#/components/schemas/Quiz"
+          },
+          "createByUserId": {
+            "type": "string",
+            "description": "Кем создан вопрос",
+            "format": "uuid"
+          },
+          "createDate": {
+            "type": "string",
+            "description": "дата создания вопроса",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string",
+            "description": "Тип вопроса",
+            "example": "In this place would be type of the question",
+            "enum": [
+              "TEST",
+              "VERIFICATION",
+              "SENTENCE_WITH_GAPS",
+              "PAIRS"
+            ]
+          },
+          "category": {
+            "type": "array",
+            "description": "Категория вопроса",
+            "example": "In this place would be list of categories of the question",
+            "items": {
+              "type": "string",
+              "description": "Категория вопроса",
+              "example": "In this place would be list of categories of the question",
+              "enum": [
+                "CATEGORY_1",
+                "CATEGORY_2",
+                "CATEGORY_3",
+                "CATEGORY_4",
+                "CATEGORY_5"
+              ]
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Статус вопроса на бэке. INGAME вычисляется на фронте при APPROVED + idGroupsOfTheQuestions.length>0",
+            "example": "In this place would be status of the question",
+            "enum": [
+              "NEW",
+              "REVIEW",
+              "REJECT",
+              "APPROVED",
+              "DEPRECATED"
+            ]
+          },
+          "idGroupsOfTheQuestions": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "id групп в которые входит вопрос",
+            "example": "In this place would be id groups, witch this question inside",
+            "items": {
+              "type": "string",
+              "description": "id групп в которые входит вопрос",
+              "format": "uuid"
+            }
+          },
+          "oneShot": {
+            "type": "boolean",
+            "description": "признак 'сквозного' вопроса"
+          }
+        },
+        "description": "Получение реквизитов вопроса"
+      },
+      "Quiz": {
+        "required": [
+          "question"
+        ],
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "вопрос"
+          }
+        },
+        "description": "Вопрос",
+        "example": "In this place would be question and something else, it depends by type of the question"
+      },
+      "QuestionTestUpdateDTO": {
+        "required": [
+          "category",
+          "oneShot",
+          "questionDescription",
+          "questionName",
+          "quiz"
+        ],
+        "type": "object",
+        "properties": {
+          "questionName": {
+            "type": "string",
+            "description": "Имя вопроса"
+          },
+          "questionDescription": {
+            "type": "string",
+            "description": "Описание вопроса"
+          },
+          "quiz": {
+            "$ref": "#/components/schemas/QuizTestImpl"
+          },
+          "category": {
+            "type": "array",
+            "description": "категория вопроса",
+            "items": {
+              "type": "string",
+              "description": "категория вопроса",
+              "enum": [
+                "CATEGORY_1",
+                "CATEGORY_2",
+                "CATEGORY_3",
+                "CATEGORY_4",
+                "CATEGORY_5"
+              ]
+            }
+          },
+          "oneShot": {
+            "type": "boolean",
+            "description": "признак 'сквозного' вопроса"
+          }
+        },
+        "description": "изменение вопроса типа Test"
+      },
+      "QuizTestImpl": {
+        "required": [
+          "answers",
+          "correct_answers",
+          "question"
+        ],
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "вопрос"
+          },
+          "answers": {
+            "type": "array",
+            "description": "номера ответов игрока",
+            "items": {
+              "type": "string",
+              "description": "номера ответов игрока"
+            }
+          },
+          "correct_answers": {
+            "type": "array",
+            "description": "правильные номера ответов",
+            "items": {
+              "type": "integer",
+              "description": "правильные номера ответов",
+              "format": "int32"
+            }
+          }
+        },
+        "description": "вопрос"
+      },
+      "QuestionsStatusUpdateDTO": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "статус вопроса",
+            "enum": [
+              "NEW",
+              "REVIEW",
+              "REJECT",
+              "APPROVED",
+              "DEPRECATED"
+            ]
+          }
+        },
+        "description": "изменение статуса вопроса"
+      },
+      "BaseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      },
+      "QuestionSentenceWithGapsUpdateDTO": {
+        "required": [
+          "category",
+          "oneShot",
+          "questionDescription",
+          "questionName",
+          "quiz"
+        ],
+        "type": "object",
+        "properties": {
+          "questionName": {
+            "type": "string",
+            "description": "Имя вопроса"
+          },
+          "questionDescription": {
+            "type": "string",
+            "description": "Описание вопроса"
+          },
+          "quiz": {
+            "$ref": "#/components/schemas/QuizSentenceWithGapsImpl"
+          },
+          "category": {
+            "type": "array",
+            "description": "категория вопроса",
+            "items": {
+              "type": "string",
+              "description": "категория вопроса",
+              "enum": [
+                "CATEGORY_1",
+                "CATEGORY_2",
+                "CATEGORY_3",
+                "CATEGORY_4",
+                "CATEGORY_5"
+              ]
+            }
+          },
+          "oneShot": {
+            "type": "boolean",
+            "description": "признак 'сквозного' вопроса"
+          }
+        },
+        "description": "Обновление вопроса типа SENTENCE_WITH_GAPS"
+      },
+      "QuizSentenceWithGapsImpl": {
+        "required": [
+          "options",
+          "question",
+          "sentenceFull"
+        ],
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "вопрос"
+          },
+          "sentenceFull": {
+            "type": "string",
+            "description": "Конечное предложение (ответ на вопрос)"
+          },
+          "options": {
+            "type": "array",
+            "description": "Слова или знаки препинания, которые надо пропустить, чтобы пользователь сам его ввёл",
+            "items": {
+              "type": "string",
+              "description": "Слова или знаки препинания, которые надо пропустить, чтобы пользователь сам его ввёл"
+            }
+          }
+        },
+        "description": "вопрос"
+      },
+      "BaseResponseListQuestionGetDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionGetDTO"
+            }
+          }
+        }
+      },
+      "QuestionRejectDTO": {
+        "required": [
+          "comment"
+        ],
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "комментарий"
+          }
+        },
+        "description": "комментирование причины отклонения вопроса"
+      },
+      "QuestionPairsUpdateDTO": {
+        "required": [
+          "category",
+          "oneShot",
+          "questionDescription",
+          "questionName",
+          "quiz"
+        ],
+        "type": "object",
+        "properties": {
+          "questionName": {
+            "type": "string",
+            "description": "Имя вопроса"
+          },
+          "questionDescription": {
+            "type": "string",
+            "description": "Описание вопроса"
+          },
+          "quiz": {
+            "$ref": "#/components/schemas/QuizPairsImpl"
+          },
+          "category": {
+            "type": "array",
+            "description": "категория вопроса",
+            "items": {
+              "type": "string",
+              "description": "категория вопроса",
+              "enum": [
+                "CATEGORY_1",
+                "CATEGORY_2",
+                "CATEGORY_3",
+                "CATEGORY_4",
+                "CATEGORY_5"
+              ]
+            }
+          },
+          "oneShot": {
+            "type": "boolean",
+            "description": "признак 'сквозного' вопроса"
+          }
+        },
+        "description": "Обновление вопроса типа PAIRS"
+      },
+      "QuizPairsImpl": {
+        "required": [
+          "correct_answers",
+          "english_words",
+          "question",
+          "russian_words"
+        ],
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "вопрос"
+          },
+          "english_words": {
+            "type": "array",
+            "description": "английские слова",
+            "items": {
+              "type": "string",
+              "description": "английские слова"
+            }
+          },
+          "russian_words": {
+            "type": "array",
+            "description": "русские слова",
+            "items": {
+              "type": "string",
+              "description": "русские слова"
+            }
+          },
+          "correct_answers": {
+            "type": "array",
+            "description": "правильные номера ответов",
+            "items": {
+              "type": "array",
+              "description": "правильные номера ответов",
+              "items": {
+                "type": "integer",
+                "description": "правильные номера ответов",
+                "format": "int32"
+              }
+            }
+          }
+        },
+        "description": "вопрос"
+      },
+      "BaseResponsePlayerProgressGetDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PlayerProgressGetDTO"
+          }
+        }
+      },
+      "CurrentProgress": {
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "description": "текущий узел игрока",
+            "format": "uuid"
+          },
+          "questionStatus": {
+            "type": "string",
+            "description": "Статус узла в прогрессе. Узел без записи в currentProgress недоступен (inactive на фронте). После ANSWERED родителя мок открывает прямых детей как NOT_ANSWERED (не перезаписывая ANSWERED/FROZEN).",
+            "enum": [
+              "NOT_ANSWERED",
+              "WAITING",
+              "ANSWERED",
+              "FROZEN"
+            ]
+          },
+          "currentQuestionId": {
+            "type": "string",
+            "description": "текущий вопрос",
+            "format": "uuid"
+          },
+          "isOpen": {
+            "type": "boolean",
+            "description": "открыта(куплена) ли нода"
+          }
+        },
+        "description": "текущие узлы игрока"
+      },
+      "PlayerProgressGetDTO": {
+        "type": "object",
+        "properties": {
+          "currentProgress": {
+            "type": "array",
+            "description": "текущие узлы игрока",
+            "items": {
+              "$ref": "#/components/schemas/CurrentProgress"
+            }
+          }
+        },
+        "description": "Получение прогресса игрока"
+      },
+      "NodeUpdateDTO": {
+        "required": [
+          "groupOfTheQuestionId",
+          "isCost",
+          "isPaid",
+          "masterNodeId",
+          "nodeName",
+          "nodeStatus",
+          "nodeType",
+          "x",
+          "y"
+        ],
+        "type": "object",
+        "properties": {
+          "nodeName": {
+            "type": "string",
+            "description": "имя ноды"
+          },
+          "groupOfTheQuestionId": {
+            "type": "string",
+            "description": "идентификатор группы вопросов",
+            "format": "uuid"
+          },
+          "masterNodeId": {
+            "type": "string",
+            "description": "идентификатор родительской ноды, значение = 0 - корневая нода",
+            "format": "uuid"
+          },
+          "nodeStatus": {
+            "type": "string",
+            "description": "статус ноды",
+            "enum": [
+              "ACTIVE",
+              "OFF",
+              "DEPRECATED",
+              "ARCHIVE"
+            ]
+          },
+          "nodeType": {
+            "type": "string",
+            "description": "тип ноды",
+            "enum": [
+              "COMMON",
+              "SERIAL"
+            ]
+          },
+          "x": {
+            "type": "integer",
+            "description": "координата ноды по оси х для отрисовки графического дерева",
+            "format": "int32"
+          },
+          "y": {
+            "type": "integer",
+            "description": "координата ноды по оси у для отрисовки графического дерева",
+            "format": "int32"
+          },
+          "isCost": {
+            "type": "boolean",
+            "description": "нода со стоимостью"
+          },
+          "isPaid": {
+            "type": "boolean",
+            "description": "платная нода"
+          }
+        },
+        "description": "Изменение ноды"
+      },
+      "BaseResponseNodeGetDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/NodeGetDTO"
+          }
+        }
+      },
+      "GetGroupOfTheQuestionsDTO": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string",
+            "description": "Id группы вопросов",
+            "format": "uuid"
+          },
+          "groupName": {
+            "type": "string",
+            "description": "имя группы вопросов"
+          },
+          "questionsId": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Список Id вопросов принадлежащих группе",
+            "items": {
+              "type": "string",
+              "description": "Список Id вопросов принадлежащих группе",
+              "format": "uuid"
+            }
+          },
+          "linkedNodesId": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Список Id узлов использующих группу",
+            "items": {
+              "type": "string",
+              "description": "Список Id узлов использующих группу",
+              "format": "uuid"
+            }
+          }
+        },
+        "description": "Получение реквизитов группы вопросов"
+      },
+      "NodeGetDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "идентификатор ноды",
+            "format": "uuid"
+          },
+          "nodeName": {
+            "type": "string",
+            "description": "имя ноды"
+          },
+          "groupOfTheQuestion": {
+            "$ref": "#/components/schemas/GetGroupOfTheQuestionsDTO"
+          },
+          "masterNodeId": {
+            "type": "string",
+            "description": "идентификатор родительской ноды",
+            "format": "uuid"
+          },
+          "nodeStatus": {
+            "type": "string",
+            "description": "статус ноды",
+            "enum": [
+              "ACTIVE",
+              "OFF",
+              "DEPRECATED",
+              "ARCHIVE"
+            ]
+          },
+          "nodeType": {
+            "type": "string",
+            "description": "тип ноды",
+            "enum": [
+              "COMMON",
+              "SERIAL"
+            ]
+          },
+          "changeDate": {
+            "type": "string",
+            "description": "дата создания/последнего изменения ноды",
+            "format": "date-time"
+          },
+          "activeSlaveNodesId": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "список активных дочерних нод",
+            "items": {
+              "type": "string",
+              "description": "список активных дочерних нод",
+              "format": "uuid"
+            }
+          },
+          "notActiveSlaveNodesId": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "список не активных дочерних нод",
+            "items": {
+              "type": "string",
+              "description": "список не активных дочерних нод",
+              "format": "uuid"
+            }
+          },
+          "x": {
+            "type": "integer",
+            "description": "координата ноды по оси х для отрисовки графического дерева",
+            "format": "int32"
+          },
+          "y": {
+            "type": "integer",
+            "description": "координата ноды по оси у для отрисовки графического дерева",
+            "format": "int32"
+          },
+          "isCost": {
+            "type": "boolean",
+            "description": "нода со стоимостью"
+          },
+          "isPaid": {
+            "type": "boolean",
+            "description": "платная нода"
+          }
+        },
+        "description": "Получение ноды. У каждой ноды, включая корень, ожидается groupOfTheQuestion с questionsId как массивом (не null)."
+      },
+      "NodeSetXYDTO": {
+        "required": [
+          "x",
+          "y"
+        ],
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer",
+            "description": "координата ноды по оси х для отрисовки графического дерева",
+            "format": "int32"
+          },
+          "y": {
+            "type": "integer",
+            "description": "координата ноды по оси у для отрисовки графического дерева",
+            "format": "int32"
+          }
+        },
+        "description": "установка координат ноды для отрисовки графического дерева"
+      },
+      "AddOrDeleteQuestionIdInTheGroupOfTheQuestionsDTO": {
+        "required": [
+          "groupId",
+          "questionId"
+        ],
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string",
+            "description": "id группы вопросов",
+            "format": "uuid"
+          },
+          "questionId": {
+            "type": "string",
+            "description": "id",
+            "format": "uuid"
+          }
+        },
+        "description": "добавление или удаление id вопроса из группы вопросов"
+      },
+      "BaseResponseGetGroupOfTheQuestionsDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetGroupOfTheQuestionsDTO"
+          }
+        }
+      },
+      "UpdateNameGroupOfTheQuestionDTO": {
+        "required": [
+          "groupId",
+          "groupName"
+        ],
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string",
+            "description": "id группы вопросов",
+            "format": "uuid"
+          },
+          "groupName": {
+            "type": "string",
+            "description": "имя группы вопросов"
+          }
+        },
+        "description": "Изменение имени группы вопросов"
+      },
+      "CreateOrUpdateGroupOfTheMentorsDTO": {
+        "required": [
+          "mentorsGroupName",
+          "mentorsId"
+        ],
+        "type": "object",
+        "properties": {
+          "mentorsGroupName": {
+            "type": "string",
+            "description": "Имя группы менторов"
+          },
+          "mentorsId": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Список Id менторов состоящих в группе",
+            "items": {
+              "type": "string",
+              "description": "Список Id менторов состоящих в группе",
+              "format": "uuid"
+            }
+          }
+        },
+        "description": "Создание или изменение группы менторов"
+      },
+      "BaseResponseGetGroupOfTheMentorsDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetGroupOfTheMentorsDTO"
+          }
+        }
+      },
+      "GetGroupOfTheMentorsDTO": {
+        "type": "object",
+        "properties": {
+          "mentorsGroupId": {
+            "type": "string",
+            "description": "id группы",
+            "format": "uuid"
+          },
+          "mentorsGroupName": {
+            "type": "string",
+            "description": "имя группы"
+          },
+          "mentorsId": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Список Id менторов состоящих в группе",
+            "items": {
+              "type": "string",
+              "description": "Список Id менторов состоящих в группе",
+              "format": "uuid"
+            }
+          }
+        },
+        "description": "Получение реквизитовгруппы менторов"
+      },
+      "UpdateIngameBrunchDTO": {
+        "required": [
+          "isDestinationToRemoveToArchiveBrunch",
+          "rootNodeId"
+        ],
+        "type": "object",
+        "properties": {
+          "rootNodeId": {
+            "type": "string",
+            "description": "Id рутовой ноды вселенной для переноса в игровую ветку",
+            "format": "uuid"
+          },
+          "isDestinationToRemoveToArchiveBrunch": {
+            "type": "boolean",
+            "description": "флаг переноса заменяемых вселенных в архив"
+          }
+        },
+        "description": "обновление игровой ветки вселенных"
+      },
+      "UpdateDevBrunchDTO": {
+        "required": [
+          "rootNodeId",
+          "sourceBrunch"
+        ],
+        "type": "object",
+        "properties": {
+          "rootNodeId": {
+            "type": "string",
+            "description": "Id рутовой ноды вселенной для переноса в девелоперскую ветку",
+            "format": "uuid"
+          },
+          "sourceBrunch": {
+            "type": "string",
+            "description": "из какой ветки копировать вселенную - 'archive' или 'ingame'"
+          }
+        },
+        "description": "обновление игровой ветки вселенных"
+      },
+      "GetAnswerForReviewDTO": {
+        "required": [
+          "nodeId",
+          "playerId"
+        ],
+        "type": "object",
+        "properties": {
+          "playerId": {
+            "type": "string",
+            "description": "ид игрока ответившего на вопрос",
+            "format": "uuid"
+          },
+          "nodeId": {
+            "type": "string",
+            "description": "ид ноды к которой привязан вопрос",
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateQuestionDTO": {
+        "required": [
+          "questionType"
+        ],
+        "type": "object",
+        "properties": {
+          "questionType": {
+            "type": "string",
+            "description": "Тип вопроса",
+            "enum": [
+              "TEST",
+              "VERIFICATION",
+              "SENTENCE_WITH_GAPS",
+              "PAIRS"
+            ]
+          }
+        },
+        "description": "Создание вопроса"
+      },
+      "NodeCreateDTO": {
+        "required": [
+          "isCost",
+          "isPaid",
+          "masterNodeId",
+          "nodeName",
+          "nodeType"
+        ],
+        "type": "object",
+        "properties": {
+          "nodeName": {
+            "type": "string",
+            "description": "имя ноды"
+          },
+          "masterNodeId": {
+            "type": "string",
+            "description": "идентификатор родительской ноды, значение = 0 - корневая нода",
+            "format": "uuid"
+          },
+          "nodeType": {
+            "type": "string",
+            "description": "тип ноды",
+            "enum": [
+              "COMMON",
+              "SERIAL"
+            ]
+          },
+          "isCost": {
+            "type": "boolean",
+            "description": "нода со стоимостью"
+          },
+          "isPaid": {
+            "type": "boolean",
+            "description": "платная нода"
+          }
+        },
+        "description": "Создание или изменение ноды"
+      },
+      "CreateGroupOfTheQuestionsDTO": {
+        "required": [
+          "groupName",
+          "questionsId"
+        ],
+        "type": "object",
+        "properties": {
+          "groupName": {
+            "type": "string",
+            "description": "имя группы вопросов"
+          },
+          "questionsId": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "список вопросов принадлежащих к группе",
+            "items": {
+              "type": "string",
+              "description": "список вопросов принадлежащих к группе",
+              "format": "uuid"
+            }
+          }
+        },
+        "description": "Создание группы вопросов"
+      },
+      "FileAttributesForAnswerCreateDTO": {
+        "required": [
+          "nodeId"
+        ],
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "description": "id ноды с вопросом к ответу на который прикрепляется файл",
+            "format": "uuid"
+          }
+        },
+        "description": "создание атрибутов к сохраняемому файлу"
+      },
+      "BaseResponseFileDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FileDTO"
+          }
+        }
+      },
+      "FileDTO": {
+        "type": "object",
+        "properties": {
+          "fileId": {
+            "type": "integer",
+            "description": "id файла",
+            "format": "int32"
+          },
+          "fileName": {
+            "type": "string",
+            "description": "имя файла"
+          }
+        },
+        "description": "получение атрибутов к сохраненному файлу"
+      },
+      "FileAttributesGetDTO": {
+        "required": [
+          "nodeId",
+          "playerId"
+        ],
+        "type": "object",
+        "properties": {
+          "playerId": {
+            "type": "string",
+            "description": "id игрока который отвечает на вопрос (прикрепил файлы)",
+            "format": "uuid"
+          },
+          "nodeId": {
+            "type": "string",
+            "description": "id ноды с вопросом к ответу на который прикреплены файлы",
+            "format": "uuid"
+          }
+        },
+        "description": "отправки значений для получения списка атрибутов к сохраненным файлам"
+      },
+      "BaseResponseFileAttributesReceiveForGetDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FileAttributesReceiveForGetDTO"
+          }
+        }
+      },
+      "FileAttributesReceiveForGetDTO": {
+        "type": "object",
+        "properties": {
+          "fileDTOList": {
+            "type": "array",
+            "description": "список атрибутов к сохраненным файлам",
+            "items": {
+              "$ref": "#/components/schemas/FileDTO"
+            }
+          }
+        },
+        "description": "получение списка атрибутов к сохраненным файлам"
+      },
+      "FileAttributesForQuestionBodyDto": {
+        "required": [
+          "fileType",
+          "questionId"
+        ],
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "description": "id вопроса, к которому прикрепляется файл",
+            "format": "uuid"
+          },
+          "fileType": {
+            "type": "string",
+            "description": "тип прикрепляемого файл",
+            "enum": [
+              "JPG",
+              "MP3"
+            ]
+          }
+        },
+        "description": "передача атрибутов для тела вопроса к загружаемому файлу"
+      },
+      "BaseResponseString": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "string"
+          }
+        }
+      },
+      "FileAttributesForQuestionAnswersDto": {
+        "required": [
+          "answerNumber",
+          "questionId"
+        ],
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "description": "id вопроса, к которому прикрепляется файл",
+            "format": "uuid"
+          },
+          "answerNumber": {
+            "type": "integer",
+            "description": "номер ответа к которому прикрепляется файл",
+            "format": "int32"
+          }
+        },
+        "description": "передача атрибутов для вариантов ответов к вопросу для загружаемого файла"
+      },
+      "SendAnswerForVerificationQuestionDTO": {
+        "required": [
+          "answer",
+          "nodeId"
+        ],
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "description": "ид ноды к которой привязан вопрос",
+            "format": "uuid"
+          },
+          "answer": {
+            "type": "string",
+            "description": "ответ на вопрос"
+          }
+        },
+        "description": "Отправка ответа на вопрос типа Verification"
+      },
+      "Answer": {
+        "type": "object",
+        "properties": {
+          "playerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nodeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "answer": {
+            "type": "string"
+          },
+          "answerStatus": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "REVIEW",
+              "APPROVED",
+              "REJECTED"
+            ]
+          },
+          "mentorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mentorsComment": {
+            "type": "string"
+          }
+        }
+      },
+      "BaseResponseAnswer": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Answer"
+          }
+        }
+      },
+      "CheckAnswerForVerificationQuestionDTO": {
+        "required": [
+          "answerStatus",
+          "mentorsComment",
+          "nodeId",
+          "playerId"
+        ],
+        "type": "object",
+        "properties": {
+          "playerId": {
+            "type": "string",
+            "description": "ид игрока ответившего на вопрос",
+            "format": "uuid"
+          },
+          "nodeId": {
+            "type": "string",
+            "description": "ид ноды к которой привязан вопрос",
+            "format": "uuid"
+          },
+          "answerStatus": {
+            "type": "string",
+            "description": "Статус ответа на вопрос",
+            "enum": [
+              "NEW",
+              "REVIEW",
+              "APPROVED",
+              "REJECTED"
+            ]
+          },
+          "mentorsComment": {
+            "type": "string",
+            "description": "комментарий ментора"
+          }
+        },
+        "description": "Проверка ответа на вопрос типа Verification"
+      },
+      "SendAnswerForTestQuestionDTO": {
+        "required": [
+          "answers",
+          "nodeId"
+        ],
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "description": "ид ноды к которой привязан вопрос",
+            "format": "uuid"
+          },
+          "answers": {
+            "type": "array",
+            "description": "ответ на вопрос",
+            "items": {
+              "type": "integer",
+              "description": "ответ на вопрос",
+              "format": "int32"
+            }
+          }
+        },
+        "description": "Отпроавка ответа на вопрос типа Test"
+      },
+      "SendAnswerForSentenceWithGapsQuestionDTO": {
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "description": "id ноды к которой привязан вопрос",
+            "format": "uuid"
+          },
+          "answers": {
+            "type": "array",
+            "description": "ответ на вопрос",
+            "items": {
+              "type": "string",
+              "description": "ответ на вопрос"
+            }
+          }
+        },
+        "description": "Отправка ответа на вопрос типа SENTENCE_WITH_GAPS"
+      },
+      "SendAnswerForPairsQuestionDTO": {
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "description": "id ноды к которой привязан вопрос",
+            "format": "uuid"
+          },
+          "answers": {
+            "type": "array",
+            "description": "ответ на вопрос",
+            "items": {
+              "type": "array",
+              "description": "ответ на вопрос",
+              "items": {
+                "type": "integer",
+                "description": "ответ на вопрос",
+                "format": "int32"
+              }
+            }
+          }
+        },
+        "description": "Отправка ответа на вопрос типа PAIRS"
+      },
+      "BaseResponseQuestionLogGetDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/QuestionLogGetDTO"
+          }
+        }
+      },
+      "LoggedQuestionDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id вопроса",
+            "format": "uuid"
+          },
+          "questionName": {
+            "type": "string",
+            "description": "Название вопроса"
+          },
+          "questionDescription": {
+            "type": "string",
+            "description": "Описание вопроса"
+          },
+          "quiz": {
+            "$ref": "#/components/schemas/Quiz"
+          },
+          "createByUserId": {
+            "type": "string",
+            "description": "Кем создан вопрос",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "description": "Тип вопроса",
+            "enum": [
+              "TEST",
+              "VERIFICATION",
+              "SENTENCE_WITH_GAPS",
+              "PAIRS"
+            ]
+          },
+          "category": {
+            "type": "array",
+            "description": "Категория вопроса",
+            "items": {
+              "type": "string",
+              "description": "Категория вопроса",
+              "enum": [
+                "CATEGORY_1",
+                "CATEGORY_2",
+                "CATEGORY_3",
+                "CATEGORY_4",
+                "CATEGORY_5"
+              ]
+            }
+          },
+          "comment": {
+            "type": "string",
+            "description": "Комментарий эксперта к вопросу"
+          }
+        }
+      },
+      "QuestionLogGetDTO": {
+        "type": "object",
+        "properties": {
+          "questionLog": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/LoggedQuestionDTO"
+            }
+          }
+        }
+      },
+      "BaseResponseMapIntegerListNodeGetDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/NodeGetDTO"
+              }
+            }
+          }
+        }
+      },
+      "BaseResponseListNodeGetDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NodeGetDTO"
+            }
+          }
+        }
+      },
+      "BaseResponseListGetGroupOfTheQuestionsDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetGroupOfTheQuestionsDTO"
+            }
+          }
+        }
+      },
+      "BaseResponseListGetGroupOfTheMentorsDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetGroupOfTheMentorsDTO"
+            }
+          }
+        }
+      },
+      "BaseResponseGetFilesForQuestionDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetFilesForQuestionDto"
+          }
+        }
+      },
+      "GetFilesForQuestionDto": {
+        "type": "object",
+        "properties": {
+          "mediaForBodyQuestion": {
+            "type": "object",
+            "description": "Медиа тела вопроса. Всегда присутствует (может быть {}). Ключи: JPG | MP3; значения — raw base64 без data:-префикса.",
+            "properties": {
+              "JPG": {
+                "type": "string",
+                "description": "Base64 JPEG"
+              },
+              "MP3": {
+                "type": "string",
+                "description": "Base64 MP3"
+              }
+            },
+            "additionalProperties": false
+          },
+          "jpgsForAnswersQuestion": {
+            "type": "object",
+            "description": "Картинки вариантов ответа. Всегда присутствует (может быть {}). Ключ — номер ответа (строка), значение — Base64 JPG.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "Медиафайлы вопроса, закодированные в Base64",
+        "required": [
+          "mediaForBodyQuestion",
+          "jpgsForAnswersQuestion"
+        ]
+      },
+      "BaseResponseCheckAnswerStatusDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/CheckAnswerStatusDTO"
+          }
+        }
+      },
+      "CheckAnswerStatusDTO": {
+        "type": "object",
+        "properties": {
+          "answerStatus": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "REVIEW",
+              "APPROVED",
+              "REJECTED"
+            ]
+          }
+        }
+      },
+      "BaseResponseListAnswer": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Answer"
+            }
+          }
+        }
+      },
+      "BaseResponseObject": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      },
+      "QuestionListPagination": {
+        "type": "object",
+        "properties": {
+          "amountOfRecordsAtAll": {
+            "type": "integer",
+            "description": "всего записей по фильтру"
+          }
+        },
+        "required": [
+          "amountOfRecordsAtAll"
+        ]
+      },
+      "QuestionPutListDTO": {
+        "type": "object",
+        "properties": {
+          "ListOfTheQuestion": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionGetDTO"
+            }
+          },
+          "Pagination": {
+            "$ref": "#/components/schemas/QuestionListPagination"
+          }
+        },
+        "required": [
+          "ListOfTheQuestion",
+          "Pagination"
+        ]
+      },
+      "BaseResponseQuestionPutListDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/QuestionPutListDTO"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "token": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
