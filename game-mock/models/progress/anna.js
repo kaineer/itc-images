@@ -5,7 +5,11 @@
  * Существенное: playerId, nodeId, questionStatus, currentQuestionId, isOpen
  * По умолчанию: questionStatus=NOT_ANSWERED, isOpen=true
  *
- * questionStatus: NOT_ANSWERED | WAITING | ANSWERED
+ * questionStatus: NOT_ANSWERED | WAITING | ANSWERED | FROZEN
+ *
+ * Когда узел становится ANSWERED, прямые дети в ветке ingame
+ * получают NOT_ANSWERED (если у них ещё не было прогресса и статус
+ * не FROZEN/ANSWERED). На фронте узел без записи в progress — неактивен.
  */
 const ids = require('../ids');
 

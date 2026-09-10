@@ -346,6 +346,63 @@ function createStore() {
     return progressByPlayer[playerId];
   }
 
+  /** Статусы, которые unlock не перезаписывает */
+  const PROTECTED_PROGRESS = new Set(['ANSWERED', 'FROZEN']);
+
+  /**
+   * После ANSWERED родителя — открыть детей на один уровень (ingame).
+   * Узлы без прогресса получают NOT_ANSWERED; FROZEN/ANSWERED не трогаем.
+   */
+  function unlockChildNodes(playerId, parentNodeId) {
+    const progress = progressOf(playerId);
+    const children = (nodesByBranch.ingame || []).filter(
+      (n) => n.masterNodeId === parentNodeId
+    );
+    for (const child of children) {
+      const existing = progress.find((p) => p.nodeId === child.id);
+      if (existing) {
+        if (PROTECTED_PROGRESS.has(existing.questionStatus)) continue;
+        continue;
+      }
+      const question = pickQuestionForNode(child);
+      progress.push({
+        nodeId: child.id,
+        questionStatus: 'NOT_ANSWERED',
+        currentQuestionId: question ? question.id : null,
+        isOpen: true
+      });
+    }
+  }
+
+  function markProgress(playerId, nodeId, status) {
+    const progress = progressOf(playerId);
+    let entry = progress.find((p) => p.nodeId === nodeId);
+    if (!entry) {
+      entry = {
+        nodeId,
+        questionStatus: status,
+        currentQuestionId: null,
+        isOpen: true
+      };
+      progress.push(entry);
+    } else {
+      entry.questionStatus = status;
+    }
+    if (status === 'ANSWERED') {
+      unlockChildNodes(playerId, nodeId);
+    }
+    return entry;
+  }
+
+  // Сиды: если родитель уже ANSWERED — открыть детей (для неполных seed-файлов)
+  for (const [playerId, items] of Object.entries(progressByPlayer)) {
+    for (const item of [...items]) {
+      if (item.questionStatus === 'ANSWERED') {
+        unlockChildNodes(playerId, item.nodeId);
+      }
+    }
+  }
+
   function ensurePlayerBalance(playerId) {
     if (!balanceByPlayer[playerId]) {
       const start = {};
@@ -480,6 +537,8 @@ function createStore() {
     questionOut,
     pickQuestionForNode,
     progressOf,
+    markProgress,
+    unlockChildNodes,
     ensurePlayerBalance,
     ensurePlayerExperience,
     addBalance,

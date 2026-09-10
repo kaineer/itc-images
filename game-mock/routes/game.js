@@ -587,20 +587,7 @@ async function gameRoutes(fastify) {
   });
 
   function markProgress(playerId, nodeId, status) {
-    const progress = store.progressOf(playerId);
-    let entry = progress.find((p) => p.nodeId === nodeId);
-    if (!entry) {
-      entry = {
-        nodeId,
-        questionStatus: status,
-        currentQuestionId: null,
-        isOpen: true
-      };
-      progress.push(entry);
-    } else {
-      entry.questionStatus = status;
-    }
-    return entry;
+    return store.markProgress(playerId, nodeId, status);
   }
 
   function grantRewards(playerId, nodeId) {
