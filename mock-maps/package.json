@@ -1,0 +1,16 @@
+{
+  "name": "mock-maps",
+  "version": "1.0.0",
+  "description": "Mock Fastify backend for Excursion GPT / maps.ai",
+  "license": "ISC",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@fastify/multipart": "^9.0.3",
+    "fastify": "^5.12.1"
+  }
+}

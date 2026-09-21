@@ -1,0 +1,23 @@
+# Dev-окружение: mock backend maps.ai на :8080.
+#
+# Порт на хосте: MAPS_MOCK_PORT (по умолчанию 8080).
+#
+# Из этой папки:
+#   docker compose up -d --build
+#   MAPS_MOCK_PORT=9090 docker compose up -d --build
+# или из корня itc-images:
+#   make maps.backend
+
+name: mock-maps
+
+services:
+  mock-backend:
+    container_name: mock-maps
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${MAPS_MOCK_PORT:-8080}:8080"
+    environment:
+      PORT: "8080"
+      HOST: "0.0.0.0"
