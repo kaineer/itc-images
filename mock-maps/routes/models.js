@@ -70,12 +70,48 @@ async function modelsRoutes(fastify) {
 
   fastify.post('/upload', async (request, reply) => {
     if (!requireUser(request, reply, store)) return;
-    const file = await request.file();
-    if (!file) {
+
+    let buffer = null;
+    let polygons;
+    let address;
+
+    const parts = request.parts();
+    for await (const part of parts) {
+      if (part.type === 'file') {
+        // OpenAPI: "File"; фронт maps.ai шлёт "file"
+        if (part.fieldname === 'File' || part.fieldname === 'file') {
+          buffer = await part.toBuffer();
+        } else if (!buffer) {
+          buffer = await part.toBuffer();
+        }
+        continue;
+      }
+
+      if (part.fieldname === 'address') {
+        address = String(part.value || '').trim() || undefined;
+      } else if (part.fieldname === 'polygons') {
+        const raw = String(part.value || '').trim();
+        if (!raw) continue;
+        try {
+          const parsed = JSON.parse(raw);
+          polygons = Array.isArray(parsed) ? parsed.map(String) : [String(parsed)];
+        } catch {
+          polygons = raw
+            .split(',')
+            .map((id) => id.trim())
+            .filter(Boolean);
+        }
+      }
+    }
+
+    if (!buffer || buffer.length === 0) {
       return reply.code(413).send(dtoError(413, 'upload', 'File is required'));
     }
-    const buffer = await file.toBuffer();
-    const modelId = store.uploadModel(buffer);
+
+    const modelId = store.uploadModel(buffer, { polygons, address });
+    if (!modelId) {
+      return reply.code(404).send(dtoError(404, 'upload', 'Building not found for address/polygons'));
+    }
     return { model: modelId };
   });
 }

@@ -46,11 +46,14 @@ curl -s -X POST http://localhost:8080/users/login \
 # → { "success": true, "accessToken": "<JWT>" }
 ```
 
-Остальные эндпоинты (кроме `/test`, `/test/health`, `/users/login`, swagger) требуют `Authorization: Bearer <token>`.
+Остальные эндпоинты (кроме `/test`, `/test/health`, `/users/login`, `GET /buildings/start`, `PUT /buildings`, `PUT /streets`, swagger) требуют `Authorization: Bearer <token>`.
+
+Админ не может удалить сам себя (`DELETE /users/:userId`) и не может сменить себе роль (`PUT /users/:userId`, `PUT /users/profile`) — ответ `403`.
 
 ## Сиды
 
 - Здания OSM: [`data/buildings.json`](./data/buildings.json) (копия `stages/import/buildings.json`).
+- Улицы OSM: [`data/streets.json`](./data/streets.json) — полигоны для `PUT /streets`.
 - Стартовая точка `GET /buildings/start` — [`data/itc.json`](./data/itc.json) (центр ITC).
 - Демо-модель `aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa` привязана к ближайшему к старту зданию.
 - Экскурсия «Центр города» с двумя точками.

@@ -1,7 +1,11 @@
 'use strict';
 
 const { createAccessToken } = require('../lib/jwt');
-const { problem, requireUser, requireAdmin } = require('../lib/http');
+const { problem, requireUser, requireAdmin, roleIndex } = require('../lib/http');
+
+function isRoleChange(user, body) {
+  return body.role != null && roleIndex(body.role) !== user.role;
+}
 
 async function usersRoutes(fastify) {
   const { store } = fastify;
@@ -32,7 +36,11 @@ async function usersRoutes(fastify) {
   fastify.put('/users/profile', async (request, reply) => {
     const user = requireUser(request, reply, store);
     if (!user) return;
-    store.updateUser(user, request.body || {});
+    const body = request.body || {};
+    if (isRoleChange(user, body)) {
+      return reply.code(403).send(problem(403, 'Forbidden', 'Cannot change your own role'));
+    }
+    store.updateUser(user, body);
     return store.userOut(user);
   });
 
@@ -62,15 +70,24 @@ async function usersRoutes(fastify) {
   });
 
   fastify.put('/users/:userId', async (request, reply) => {
-    if (!requireAdmin(request, reply, store)) return;
+    const current = requireAdmin(request, reply, store);
+    if (!current) return;
     const user = store.getUserById(request.params.userId);
     if (!user) return reply.code(404).send(problem(404, 'Not Found', 'User not found'));
-    store.updateUser(user, request.body || {});
+    const body = request.body || {};
+    if (user.id === current.id && isRoleChange(user, body)) {
+      return reply.code(403).send(problem(403, 'Forbidden', 'Cannot change your own role'));
+    }
+    store.updateUser(user, body);
     return store.userOut(user);
   });
 
   fastify.delete('/users/:userId', async (request, reply) => {
-    if (!requireAdmin(request, reply, store)) return;
+    const current = requireAdmin(request, reply, store);
+    if (!current) return;
+    if (request.params.userId === current.id) {
+      return reply.code(403).send(problem(403, 'Forbidden', 'Cannot delete your own account'));
+    }
     if (!store.deleteUser(request.params.userId)) {
       return reply.code(404).send(problem(404, 'Not Found', 'User not found'));
     }

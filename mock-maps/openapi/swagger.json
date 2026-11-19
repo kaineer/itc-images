@@ -508,6 +508,146 @@
         }
       }
     },
+    "/streets": {
+      "put": {
+        "tags": [
+          "Streets"
+        ],
+        "summary": "Получить с бэкенда полигоны улиц вокруг точки",
+        "description": "Получить полигоны улиц вокруг точки с координатами x и z, на расстоянии distance.\r\nДанные соответствуют сегментам из `data/streets.json` (замкнутые полигоны проезжей части).\r\n            \r\n**Тело запроса:**\r\n```json\r\n{\r\n  \"position\": {\r\n    \"x\": number,\r\n    \"z\": number\r\n  },\r\n  \"distance\": number\r\n}\r\n```\r\n            \r\n**Ответ:**\r\n```json\r\n[\r\n  {\r\n    \"id\": \"16876303_-67395_77203_0\",\r\n    \"way_id\": \"16876303\",\r\n    \"name\": \"улица Серафимы Дерябиной\",\r\n    \"highway\": \"primary_link\",\r\n    \"width\": 10.5,\r\n    \"nodes\": [\r\n      {\"x\": -6739431.129983026, \"z\": 7720322.494646106},\r\n      ...\r\n    ]\r\n  },\r\n  ...\r\n]\r\n```\r\n            \r\n**Ошибки:**\r\n- **401 Unauthorized**: Универсальная ошибка, если не прилогинились\r\n- **403 Forbidden**: Если по роли не положено получать\r\n- **406 Not Acceptable**: Если запрашиваем северный полюс\r\n- **404 Not Found**: Если экскурсия не создана/удалена",
+        "requestBody": {
+          "description": "Запрос с позицией и расстоянием",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StreetsAroundPointRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StreetsAroundPointRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StreetsAroundPointRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StreetPolygonDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StreetPolygonDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StreetPolygonDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationErrorDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationErrorDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleErrorDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleErrorDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackErrorDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackErrorDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackErrorDto"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "Not Acceptable",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PositionErrorDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PositionErrorDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PositionErrorDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/model-offers/upload": {
       "post": {
         "tags": [
@@ -4097,6 +4237,52 @@
           "message": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "StreetPolygonDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "way_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "highway": {
+            "type": "string",
+            "nullable": true
+          },
+          "width": {
+            "type": "number",
+            "format": "double"
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PositionDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "StreetsAroundPointRequestDto": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "$ref": "#/components/schemas/PositionDto"
+          },
+          "distance": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false

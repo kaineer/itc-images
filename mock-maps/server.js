@@ -30,6 +30,7 @@ async function build() {
   await server.register(require('./routes/test'));
   await server.register(require('./routes/users'));
   await server.register(require('./routes/buildings'));
+  await server.register(require('./routes/streets'));
   await server.register(require('./routes/models'));
   await server.register(require('./routes/model-offers'));
   await server.register(require('./routes/tracks'));
@@ -43,6 +44,7 @@ async function start() {
     await server.listen({ port: config.port, host: config.host });
     server.log.info(`mock-maps listening on http://${config.host}:${config.port}`);
     server.log.info(`buildings: ${server.store.buildings.length} from data/buildings.json`);
+    server.log.info(`streets: ${server.store.streets.length} from data/streets.json`);
     server.log.info('OpenAPI: GET /swagger/v1/swagger.json');
   } catch (err) {
     server.log.error(err);

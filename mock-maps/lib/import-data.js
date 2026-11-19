@@ -29,32 +29,12 @@ function hydrateBuilding(raw) {
   const nodes = Array.isArray(raw.nodes)
     ? raw.nodes.map((n) => ({ x: Number(n.x), z: Number(n.z) }))
     : [];
-  let minX = Infinity;
-  let maxX = -Infinity;
-  let minZ = Infinity;
-  let maxZ = -Infinity;
-  let sx = 0;
-  let sz = 0;
-  for (const node of nodes) {
-    minX = Math.min(minX, node.x);
-    maxX = Math.max(maxX, node.x);
-    minZ = Math.min(minZ, node.z);
-    maxZ = Math.max(maxZ, node.z);
-    sx += node.x;
-    sz += node.z;
-  }
-  const count = nodes.length || 1;
   return {
     id: String(raw.id),
     address: raw.address || null,
     height: Number(raw.height) || 0,
     nodes,
-    minX: Number.isFinite(minX) ? minX : 0,
-    maxX: Number.isFinite(maxX) ? maxX : 0,
-    minZ: Number.isFinite(minZ) ? minZ : 0,
-    maxZ: Number.isFinite(maxZ) ? maxZ : 0,
-    cx: sx / count,
-    cz: sz / count
+    ...nodesBounds(nodes)
   };
 }
 
@@ -78,9 +58,60 @@ function loadStart(fallback) {
   return fallback;
 }
 
-function aabbHitsCircle(building, x, z, radius) {
-  const nx = Math.max(building.minX, Math.min(x, building.maxX));
-  const nz = Math.max(building.minZ, Math.min(z, building.maxZ));
+function nodesBounds(nodes) {
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minZ = Infinity;
+  let maxZ = -Infinity;
+  let sx = 0;
+  let sz = 0;
+  for (const node of nodes) {
+    minX = Math.min(minX, node.x);
+    maxX = Math.max(maxX, node.x);
+    minZ = Math.min(minZ, node.z);
+    maxZ = Math.max(maxZ, node.z);
+    sx += node.x;
+    sz += node.z;
+  }
+  const count = nodes.length || 1;
+  return {
+    minX: Number.isFinite(minX) ? minX : 0,
+    maxX: Number.isFinite(maxX) ? maxX : 0,
+    minZ: Number.isFinite(minZ) ? minZ : 0,
+    maxZ: Number.isFinite(maxZ) ? maxZ : 0,
+    cx: sx / count,
+    cz: sz / count
+  };
+}
+
+function hydrateStreet(raw) {
+  const nodes = Array.isArray(raw.nodes)
+    ? raw.nodes.map((n) => ({ x: Number(n.x), z: Number(n.z) }))
+    : [];
+  return {
+    id: String(raw.id),
+    way_id: raw.way_id != null ? String(raw.way_id) : null,
+    name: raw.name || null,
+    highway: raw.highway || null,
+    width: Number(raw.width) || 0,
+    nodes,
+    ...nodesBounds(nodes)
+  };
+}
+
+function loadStreets() {
+  const filePath = path.join(DATA_DIR, 'streets.json');
+  if (!fs.existsSync(filePath)) return [];
+  const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  const list = Array.isArray(data.streets) ? data.streets : [];
+  return list
+    .filter((s) => s && Array.isArray(s.nodes) && s.nodes.length)
+    .map(hydrateStreet);
+}
+
+function aabbHitsCircle(poly, x, z, radius) {
+  const nx = Math.max(poly.minX, Math.min(x, poly.maxX));
+  const nz = Math.max(poly.minZ, Math.min(z, poly.maxZ));
   return Math.hypot(x - nx, z - nz) <= radius;
 }
 
@@ -89,10 +120,14 @@ function buildingInRadius(building, x, z, radius) {
   return building.nodes.some((node) => Math.hypot(node.x - x, node.z - z) <= radius);
 }
 
+const streetInRadius = buildingInRadius;
+
 module.exports = {
   DATA_DIR,
   normalizeAddress,
   loadBuildings,
+  loadStreets,
   loadStart,
-  buildingInRadius
+  buildingInRadius,
+  streetInRadius
 };

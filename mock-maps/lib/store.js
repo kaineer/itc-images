@@ -6,8 +6,10 @@ const crypto = require('crypto');
 const { roleIndex, roleName } = require('./http');
 const {
   loadBuildings,
+  loadStreets,
   loadStart,
   buildingInRadius,
+  streetInRadius,
   normalizeAddress
 } = require('./import-data');
 
@@ -59,6 +61,78 @@ function buildingOut(building) {
     height: building.height,
     address: building.address,
     nodes: building.nodes
+  };
+}
+
+/** DTO здания-с-моделью (как ждёт фронт BuildingWithModel). */
+function modelBuildingOut(model, hostBuilding) {
+  const position =
+    model.position ||
+    (hostBuilding && hostBuilding.position) ||
+    (hostBuilding ? [hostBuilding.cx, 0, hostBuilding.cz] : [0, 0, 0]);
+  const rotation =
+    model.rotation ||
+    (hostBuilding && hostBuilding.rotation) ||
+    [0, model.rotationY || 0, 0];
+  const scale =
+    model.scale != null
+      ? model.scale
+      : hostBuilding && hostBuilding.scale != null
+        ? hostBuilding.scale
+        : 1;
+  return {
+    id: (hostBuilding && hostBuilding.id) || model.buildingId || model.id,
+    model: model.id,
+    address:
+      model.address != null
+        ? model.address
+        : hostBuilding
+          ? hostBuilding.address
+          : null,
+    height: hostBuilding && hostBuilding.height != null ? hostBuilding.height : 10,
+    polygons: model.polygons || (hostBuilding && hostBuilding.polygons) || [],
+    position,
+    rotation,
+    scale,
+    modelMetadata: { position, rotation, scale }
+  };
+}
+
+/** Привязать модель к полигонам: хост-здание получает model, остальные только помечаются через model.polygons. */
+function linkModelToPolygons(buildings, model) {
+  const polygonIds = model.polygons || [];
+  for (const b of buildings) {
+    if (b.model === model.id) {
+      delete b.model;
+      delete b.polygons;
+      delete b.position;
+      delete b.rotation;
+      delete b.scale;
+    }
+  }
+  if (polygonIds.length === 0) return;
+  const host =
+    buildings.find((b) => b.id === model.buildingId) ||
+    buildings.find((b) => b.id === polygonIds[0]);
+  if (!host) return;
+  model.buildingId = host.id;
+  host.model = model.id;
+  host.polygons = polygonIds.slice();
+  host.position = model.position || [host.cx, 0, host.cz];
+  host.rotation = model.rotation || [0, model.rotationY || 0, 0];
+  host.scale = model.scale != null ? model.scale : 1;
+  host.updatedAt = nowIso();
+  if (model.address != null) host.address = model.address;
+}
+
+function streetOut(street) {
+  return {
+    id: street.id,
+    way_id: street.way_id,
+    name: street.name,
+    highway: street.highway,
+    width: street.width,
+    nodes: street.nodes
   };
 }
 
@@ -139,6 +213,7 @@ function createStore() {
   };
 
   const buildings = loadBuildings();
+  const streets = loadStreets();
   const nearest = buildings.reduce((best, building) => {
     if (!best) return building;
     const d = dist({ x: building.cx, z: building.cz }, START);
@@ -212,6 +287,7 @@ function createStore() {
     start: START,
     users,
     buildings,
+    streets,
     models,
     tracks,
     modelOffers,
@@ -263,9 +339,76 @@ function createStore() {
       const center = position || START;
       const radius = Number(distance);
       const max = Number.isFinite(radius) ? radius : 300;
-      return buildings
-        .filter((b) => buildingInRadius(b, center.x, center.z, max))
-        .map(buildingOut);
+
+      // Полигоны, закрытые 3D-моделью — в ответ не отдаём (фронт рисует model вместо nodes).
+      const replacedPolygonIds = new Set();
+      for (const model of Object.values(models)) {
+        for (const pid of model.polygons || []) {
+          replacedPolygonIds.add(pid);
+        }
+      }
+      for (const b of buildings) {
+        if (!b.model) continue;
+        for (const pid of b.polygons || []) {
+          replacedPolygonIds.add(pid);
+        }
+      }
+
+      const result = [];
+      const emittedModelIds = new Set();
+
+      for (const b of buildings) {
+        if (!buildingInRadius(b, center.x, center.z, max)) continue;
+
+        if (b.model) {
+          if (emittedModelIds.has(b.model)) continue;
+          emittedModelIds.add(b.model);
+          const model = models[b.model];
+          if (model) {
+            result.push(
+              modelBuildingOut(
+                {
+                  ...model,
+                  polygons: model.polygons || b.polygons || []
+                },
+                b
+              )
+            );
+          } else {
+            result.push(buildingOut(b));
+          }
+          continue;
+        }
+
+        if (replacedPolygonIds.has(b.id)) continue;
+        result.push(buildingOut(b));
+      }
+
+      // Модели, у которых полигоны в радиусе, но хост ещё не помечен building.model
+      for (const model of Object.values(models)) {
+        if (emittedModelIds.has(model.id)) continue;
+        const polygonIds = model.polygons || [];
+        if (polygonIds.length === 0) continue;
+        const related = polygonIds
+          .map((id) => buildings.find((b) => b.id === id))
+          .filter(Boolean);
+        const anyInArea = related.some((b) =>
+          buildingInRadius(b, center.x, center.z, max)
+        );
+        if (!anyInArea) continue;
+        result.push(modelBuildingOut(model, related[0] || null));
+        emittedModelIds.add(model.id);
+      }
+
+      return result;
+    },
+    streetsAround(position, distance) {
+      const center = position || START;
+      const radius = Number(distance);
+      const max = Number.isFinite(radius) ? radius : 300;
+      return streets
+        .filter((s) => streetInRadius(s, center.x, center.z, max))
+        .map(streetOut);
     },
     buildingById(id) {
       return buildings.find((b) => b.id === id) || null;
@@ -324,13 +467,22 @@ function createStore() {
         buffer: Buffer.from(PLACEHOLDER)
       };
       existing.position = body.position || existing.position || [START.x, 0, START.z];
-      existing.rotation = body.rotation || existing.rotation || [0, 0, 0];
-      existing.rotationY =
-        typeof body.rotation === 'number' ? body.rotation : existing.rotationY || 0;
+      if (Array.isArray(body.rotation)) {
+        existing.rotation = body.rotation;
+        existing.rotationY = body.rotation[1] || 0;
+      } else if (typeof body.rotation === 'number') {
+        existing.rotationY = body.rotation;
+        existing.rotation = [0, body.rotation, 0];
+      } else {
+        existing.rotation = existing.rotation || [0, 0, 0];
+        existing.rotationY = existing.rotationY || 0;
+      }
       existing.scale = body.scale != null ? body.scale : existing.scale || 1;
       existing.polygons = body.polygons || existing.polygons || [];
       existing.address = body.address != null ? body.address : existing.address;
+      if (body.buildingId) existing.buildingId = body.buildingId;
       models[id] = existing;
+      linkModelToPolygons(buildings, existing);
       return {
         id,
         position: existing.position,
@@ -344,7 +496,10 @@ function createStore() {
       const existing = models[id];
       if (!existing) return null;
       if (body.position) existing.position = body.position;
-      if (body.rotation != null) {
+      if (Array.isArray(body.rotation)) {
+        existing.rotation = body.rotation;
+        existing.rotationY = body.rotation[1] || 0;
+      } else if (body.rotation != null) {
         existing.rotationY = body.rotation;
         existing.rotation = [0, body.rotation, 0];
       }
@@ -352,35 +507,61 @@ function createStore() {
       if (body.polygons) existing.polygons = body.polygons;
       if (body.address != null) existing.address = body.address;
       if (body.buildingId) existing.buildingId = body.buildingId;
-      const building = buildings.find((b) => b.id === existing.buildingId || b.model === id);
-      if (building) {
-        building.model = id;
-        building.position = existing.position;
-        building.rotation = existing.rotation;
-        building.scale = existing.scale;
-        if (existing.address != null) building.address = existing.address;
-      }
+      linkModelToPolygons(buildings, existing);
       return existing;
     },
     deleteModel(id) {
       if (!models[id]) return false;
       delete models[id];
       for (const b of buildings) {
-        if (b.model === id) delete b.model;
+        if (b.model === id) {
+          delete b.model;
+          delete b.polygons;
+          delete b.position;
+          delete b.rotation;
+          delete b.scale;
+        }
       }
       return true;
     },
-    uploadModel(buffer) {
+    uploadModel(buffer, options = {}) {
       const id = crypto.randomUUID();
-      models[id] = {
+      let polygons = Array.isArray(options.polygons)
+        ? options.polygons.map(String)
+        : [];
+      let address =
+        options.address != null && String(options.address).trim()
+          ? String(options.address).trim()
+          : undefined;
+
+      // По OpenAPI: можно указать address без polygons — привязываем к найденному зданию.
+      if (polygons.length === 0 && address) {
+        const q = normalizeAddress(address);
+        const building = buildings.find(
+          (b) => b.address && normalizeAddress(b.address).includes(q)
+        );
+        if (!building) return null;
+        polygons = [building.id];
+        address = building.address || address;
+      }
+
+      const host =
+        polygons.length > 0
+          ? buildings.find((b) => b.id === polygons[0])
+          : null;
+
+      const model = {
         id,
-        position: [START.x, 0, START.z],
+        position: host ? [host.cx, 0, host.cz] : [START.x, 0, START.z],
         rotation: [0, 0, 0],
         rotationY: 0,
         scale: 1,
-        polygons: [],
-        buffer: buffer || Buffer.from(PLACEHOLDER)
+        polygons,
+        address,
+        buffer: buffer && buffer.length ? buffer : Buffer.from(PLACEHOLDER)
       };
+      models[id] = model;
+      linkModelToPolygons(buildings, model);
       return id;
     },
 

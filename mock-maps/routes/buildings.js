@@ -5,13 +5,11 @@ const { dtoError, requireUser } = require('../lib/http');
 async function buildingsRoutes(fastify) {
   const { store } = fastify;
 
-  fastify.get('/buildings/start', async (request, reply) => {
-    if (!requireUser(request, reply, store)) return;
+  fastify.get('/buildings/start', async () => {
     return store.start;
   });
 
   fastify.put('/buildings', async (request, reply) => {
-    if (!requireUser(request, reply, store)) return;
     const body = request.body || {};
     if (!body.position || body.position.x == null || body.position.z == null) {
       return reply.code(406).send(dtoError(406, 'position', 'position.x and position.z are required'));
