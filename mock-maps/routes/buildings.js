@@ -27,6 +27,12 @@ async function buildingsRoutes(fastify) {
     return store.buildingAddressResponse(building);
   });
 
+  fastify.put('/buildings/search', async (request, reply) => {
+    if (!requireUser(request, reply, store)) return;
+    const address = (request.body || {}).address;
+    return store.searchBuildingsByAddress(address);
+  });
+
   fastify.patch('/buildings/:buildingId', async (request, reply) => {
     if (!requireUser(request, reply, store)) return;
     const building = store.buildingById(request.params.buildingId);

@@ -421,6 +421,23 @@ function createStore() {
         buildings.find((b) => b.address && normalizeAddress(b.address).includes(q)) || null
       );
     },
+    searchBuildingsByAddress(address) {
+      const q = normalizeAddress(address);
+      if (!q) return [];
+      return buildings
+        .filter((b) => b.address && normalizeAddress(b.address).includes(q))
+        .map((b) => {
+          const node = (b.nodes && b.nodes[0]) || {
+            x: b.position ? b.position[0] : b.cx || 0,
+            z: b.position ? b.position[2] : b.cz || 0
+          };
+          return {
+            address: b.address,
+            x: node.x,
+            z: node.z
+          };
+        });
+    },
     updateBuilding(building, body) {
       if (body.address != null) building.address = body.address;
       if (body.height != null) building.height = body.height;
